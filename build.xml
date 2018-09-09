@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * This file is part of g7mzr/db module.
+ *
+ * (c) Sandy McNeil <g7mzr35@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+-->
+<project name="g7mzr/db" default="build" basedir="." description="Phing Buildfile.">
+
+    <!-- Set up default directories -->
+    <property name="basedir" value="${project.basedir}" />
+    <property name="toolsdir" value="${basedir}/vendor/bin/"/>
+    <property name="builddir" value="${basedir}/build/"/>
+
+
+    <!-- The default location for the composer phar -->
+    <property name="composer" value="${basedir}/build/composer.phar"/>
+
+
+    <!-- ================================================================== -->
+    <!--                 Targets to Setup the Build Tools                   -->
+    <!-- ================================================================== -->
+
+    <target name="php-check">
+        <condition property="php" value="php">
+            <not>
+                <isset property="${php}"/>
+            </not>
+        </condition>
+    </target>
+
+    <target name="composer-check">
+        <available file="${composer}" property="composer.present"/>
+    </target>
+
+    <target name="composer-download"
+            depends="composer-check"
+            unless="composer.present">
+        <property name="composer.noselfupdate" value="true"/>
+        <exec executable="wget" dir="${builddir}" passthru="true" logoutput="true">
+            <arg line="https://getcomposer.org/composer.phar" />
+        </exec>
+    </target>
+
+    <target name="composer-selfupdate"
+            depends="php-check,composer-download"
+            unless="composer.noselfupdate">
+        <exec executable="${php}">
+            <arg value="${composer}"/>
+            <arg value="self-update"/>
+            <arg value="--quiet"/>
+        </exec>
+    </target>
+<!-- Install or Update the Dependancies -->
+    <target name="composer-install"
+            depends="composer-selfupdate"
+            description="Installing composer dependencies">
+        <exec executable="php" passthru="true" logoutput="true">
+            <arg value="${composer}" />
+            <arg value="install" />
+            <arg value="--prefer-dist" />
+            <arg value="--no-progress" />
+        </exec>
+    </target>
+
+    <target name="composer-update"
+            depends="composer-selfupdate"
+            description="Manual update composer dependencies">
+        <exec executable="php" passthru="true" logoutput="true">
+            <arg value="${composer}" />
+            <arg value="update" />
+            <arg value="--prefer-dist" />
+            <arg value="--no-progress" />
+        </exec>
+    </target>
+
+
+    <!-- ================================================================== -->
+    <!--             Targets used to CLEAN the BUILD ENVIRONMENT            -->
+    <!-- ================================================================== -->
+    <target name="clean-artifacts">
+        <delete dir="${basedir}/build/api"/>
+        <delete dir="${basedir}/build/coverage"/>
+        <delete dir="${basedir}/build/logs"/>
+        <delete dir="${basedir}/build/pdepend"/>
+        <delete dir="${basedir}/build/phpdox"/>
+        <!--<delete dir="${basedir}/vendor"/> -->
+    </target>
+
+    <!-- ================================================================== -->
+    <!--           Targets used to PREPARE the BUILD ENVIRONMENT            -->
+    <!-- ================================================================== -->
+
+
+    <target name="db-update">
+        <exec executable="php" dir="${basedir}" logoutput="true" checkreturn="true">
+            <arg line="bin/dbconfig.php" />
+        </exec>
+    </target>
+
+    <target name="prepare-build"
+            unless="prepare.done"
+            depends="composer-install, clean, db-update"
+            description="Prepare for build">
+        <mkdir dir="${basedir}/build/api"/>
+        <mkdir dir="${basedir}/build/coverage"/>
+        <mkdir dir="${basedir}/build/logs"/>
+        <mkdir dir="${basedir}/build/pdepend"/>
+        <mkdir dir="${basedir}/build/phpdox"/>
+        <property name="prepare.done" value="true"/>
+    </target>
+
+    <!-- ================================================================== -->
+    <!--                      Code Analysis Targets                         -->
+    <!-- ================================================================== -->
+
+    <!-- ===                     MANUAL TARGETS                         === -->
+    <target name="phpcs"
+        description="Find coding standard violations using PHP_CodeSniffer and print human readable output. Intended for usage on the command line before committing.">
+        <exec passthru="true" logoutput="true" executable="${toolsdir}phpcs">
+            <arg value="--standard=${basedir}/build/phpcs.xml" />
+            <arg value="--extensions=php" />
+            <arg value="--ignore=autoload.php " />
+            <arg path="${basedir}" />
+         </exec>
+    </target>
+
+    <target name="phpcbf"
+            description="Fix coding standard violations using PHP_CodeSniffer.">
+        <exec executable="${toolsdir}phpcbf" passthru="true" logoutput="true">
+            <arg value="--standard=${basedir}/build/phpcs.xml" />
+            <arg path="${basedir}" />
+        </exec>
+    </target>
+
+
+    <target name="phploc"
+            description="Measure project size using PHPLOC and print human readable output. Intended for usage on the command line.">
+        <exec executable="${toolsdir}phploc" passthru="true" logoutput="true">
+            <arg value="--count-tests" />
+            <arg path="${basedir}/base" />
+            <arg path="${basedir}/includes" />
+            <arg path="${basedir}/tests" />
+        </exec>
+    </target>
+
+    <target name="phpmd"
+            description="Perform project mess detection using PHPMD and print human readable output. Intended for usage on the command line before committing.">
+        <exec executable="${toolsdir}phpmd" passthru="true" logoutput="true">
+            <arg path="${basedir}/src, ${basedir}/tests" />
+            <arg value="text" />
+            <arg path="${basedir}/build/phpmd.xml" />
+        </exec>
+    </target>
+
+    <target name="phpcpd"
+            description="Find duplicate code using PHPCPD and print human readable output. Intended for usage on the command line before committing.">
+        <exec executable="${toolsdir}phpcpd" passthru="true" logoutput="true">
+            <arg path="${basedir}/src" />
+        </exec>
+    </target>
+
+
+    <target name="lint" description="Perform syntax check of sourcecode files">
+        <apply executable="php" failonerror="true">
+            <arg value="-l" />
+
+            <fileset dir="${basedir}/src">
+                <include name="**/*.php" />
+            </fileset>
+
+            <fileset dir="${basedir}/tests">
+                <include name="**/*.php" />
+            </fileset>
+        </apply>
+    </target>
+
+    <target name="pdepend"
+            depends="prepare"
+            description="Calculate software metrics using PHP_Depend and log result in XML format. Intended for usage within a continuous integration environment.">
+        <exec executable="${toolsdir}pdepend" passthru="true" logoutput="true">
+            <arg value="--jdepend-xml=${basedir}/build/logs/jdepend.xml" />
+            <arg value="--jdepend-chart=${basedir}/build/pdepend/dependencies.svg" />
+            <arg value="--overview-pyramid=${basedir}/build/pdepend/overview-pyramid.svg" />
+            <arg path="${basedir}/src" />
+        </exec>
+    </target>
+
+   <!-- ===                     CI TARGETS                            === -->
+
+    <target name="phploc-ci"
+            depends="prepare"
+            description="Measure project size using PHPLOC and log result in CSV and XML format. Intended for usage within a continuous integration environment.">
+        <exec executable="${toolsdir}phploc">
+            <arg value="--count-tests" />
+            <arg value="--log-csv" />
+            <arg path="${basedir}/build/logs/phploc.csv" />
+            <arg value="--log-xml" />
+            <arg path="${basedir}/build/logs/phploc.xml" />
+            <arg path="${basedir}/src" />
+            <arg path="${basedir}/tests" />
+        </exec>
+    </target>
+
+    <target name="phpmd-ci"
+            depends="prepare"
+            description="Perform project mess detection using PHPMD and log result in XML format. Intended for usage within a continuous integration environment.">
+        <exec executable="${toolsdir}phpmd">
+            <arg path="${basedir}/src, ${basedir}/tests" />
+            <arg value="xml" />
+            <arg path="${basedir}/build/phpmd.xml" />
+            <arg value="--reportfile" />
+            <arg path="${basedir}/build/logs/pmd.xml" />
+        </exec>
+    </target>
+
+    <target name="phpcs-ci"
+            depends="prepare"
+            description="Find coding standard violations using PHP_CodeSniffer and log result in XML format. Intended for usage within a continuous integration environment.">
+        <exec executable="${toolsdir}phpcs" output="/dev/null">
+            <arg value="--report=checkstyle" />
+            <arg value="--report-file=${basedir}/build/logs/checkstyle.xml" />
+            <arg value="--standard=${basedir}/build/phpcs.xml" />
+            <arg value="--extensions=php" />
+            <arg value="--ignore=autoload.php" />
+        <arg path="${basedir}" />
+       </exec>
+    </target>
+
+    <target name="phpcpd-ci"
+            depends="prepare"
+            description="Find duplicate code using PHPCPD and log result in XML format. Intended for usage within a continuous integration environment.">
+        <exec executable="${toolsdir}phpcpd">
+            <arg value="--log-pmd" />
+            <arg path="${basedir}/build/logs/pmd-cpd.xml" />
+            <arg path="${basedir}/src" />
+        </exec>
+    </target>
+
+
+    <!-- ================================================================== -->
+    <!--                        Unit Testing Targets                        -->
+    <!-- ================================================================== -->
+
+    <target name="unit"
+            depends="prepare"
+            description="Run unit tests with PHPUnit">
+        <exec executable="${toolsdir}phpunit" checkreturn="true" passthru="true" logoutput="true">
+            <arg value="--configuration"/>
+            <arg path="${basedir}/build/phpunit.xml"/>
+            <arg value="--testsuite" />
+            <arg value="unit" />
+            <arg value="--bootstrap" />
+            <arg value="vendor/autoload.php" />
+        </exec>
+    </target>
+
+    <!-- ================================================================== -->
+    <!--                       Documentation Targets                        -->
+    <!-- ================================================================== -->
+
+    <target name="phpdox"
+            depends="phploc-ci,phpcs-ci,phpmd-ci"
+            description="Generate project documentation using phpDox">
+        <exec executable="${toolsdir}phpdox" dir="${basedir}/build"  passthru="true" logoutput="true"/>
+    </target>
+
+    <target name="phpdox2"
+            description="Generate project documentation using phpDox">
+        <exec executable="${toolsdir}phpdox" dir="${basedir}/build"  passthru="true" logoutput="true"/>
+    </target>
+
+
+    <!-- ================================================================== -->
+    <!--                          Build Targets                             -->
+    <!-- ================================================================== -->
+
+    <target name="clean"
+            depends="composer-install, clean-artifacts"/>
+
+    <target name="prepare"
+            depends=" clean, db-update, prepare-build"/>
+
+    <target name="code-analysis"
+            depends="lint, phploc-ci, pdepend, phpmd-ci, phpcs-ci, phpcpd-ci"/>
+
+    <target name="unit-test"
+            depends="prepare, unit"/>
+
+    <target name="documentation"
+            depends="code-analysis, unit-test, phpdox"/>
+
+    <!-- Default Build Target -->
+    <target name="build"
+            depends="composer-install, clean, prepare, code-analysis, unit-test, documentation"/>
+
+</project>

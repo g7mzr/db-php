@@ -1,0 +1,27 @@
+{
+    "name": "g7mzr/db",
+    "description": "This is a composer module for accesing databases via php",
+    "license": "GPL-3.0-only",
+    "authors": [
+        {
+            "name": "Sandy McNeil",
+            "email": "g7mzrdev@gmail.com"
+        }
+    ],
+    "require": {
+        "php" : ">=7.0.2"
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "2.*",
+        "phpunit/phpunit": "^6",
+        "phpunit/php-invoker": "*",
+        "phploc/phploc": "*",
+        "phpmd/phpmd" : "@stable",
+        "sebastian/phpcpd": "*",
+        "pdepend/pdepend" : "2.5.2",
+        "theseer/phpdox" : "0.11.2"
+    },
+    "autoload": {
+        "psr-4": {"g7mzr\\db\\": "src/" }
+    }
+}

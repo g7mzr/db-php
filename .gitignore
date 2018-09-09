@@ -1,0 +1,6 @@
+*~
+/vendor/
+/nbproject/
+composer.phar
+testconfig.php
+

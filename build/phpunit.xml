@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/6.3/phpunit.xsd"
+    backupGlobals="true"
+    backupStaticAttributes="false"
+    cacheTokens="false"
+    colors="false"
+    convertErrorsToExceptions="true"
+    convertNoticesToExceptions="true"
+    convertWarningsToExceptions="true"
+    forceCoversAnnotation="false"
+    mapTestClassNameToCoveredClassName="false"
+
+    processIsolation="false"
+    stopOnError="false"
+    stopOnFailure="false"
+    stopOnIncomplete="false"
+    stopOnSkipped="false"
+
+    verbose="false">
+    <testsuites>
+        <testsuite name="unit">
+            <file>../tests/error.classTest.php</file>
+            <file>../tests/db.classTest.php</file>
+            <file>../tests/sqldriver.classTest.php</file>
+            <file>../tests/mockdriver.classTest.php</file>
+        </testsuite>
+
+    </testsuites>
+    <filter>
+        <whitelist>
+            <directory suffix=".php">../src</directory>
+            <exclude>
+                <directory>../src/dbconfig</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+    <php>
+        <var name="unittest" value="true" />
+    </php>
+    <logging>
+      <log type="coverage-html" target="coverage" title="Webtemplate"
+            charset="UTF-8" yui="true" highlight="true"/>
+      <log type="coverage-clover" target="logs/clover.xml"/>
+      <log type="coverage-crap4j" target="logs/crap4j.xml"/>
+      <log type="coverage-xml" target="logs/coverage"/>
+      <log type="junit" target="logs/junit.xml" logIncompleteSkipped="false"/>
+    </logging>
+</phpunit>
