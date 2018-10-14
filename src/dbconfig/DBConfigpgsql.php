@@ -132,6 +132,28 @@ class DBConfigpgsql
         //$this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         $localconn->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_SILENT);
 
+        // Create the Schema Table
+        $sql = "CREATE TABLE schema(";
+        $sql .= "version integer NOT NULL,";
+        $sql .= "schema text NOT NULL";
+        $sql .= ")";
+        $tableschemaresult = $localconn->query($sql);
+        if ($tableschemaresult === false) {
+            echo "Error creating Schema Table\n";
+            return false;
+        }
+
+
+        // Create an Empty Schema Table for testing
+        $sql = "CREATE TABLE emptyschema(";
+        $sql .= "version integer NOT NULL,";
+        $sql .= "schema text NOT NULL";
+        $sql .= ")";
+        $tableemptyschemaresult = $localconn->query($sql);
+        if ($tableemptyschemaresult === false) {
+            echo "Error creating Schema Table\n";
+            return false;
+        }
 
         // CREATE THE FIRST TEST TABLE
         $sql = "CREATE TABLE users (";

@@ -1,0 +1,15 @@
+{
+    "version": "1",
+    "tables": {
+        "users": {
+            "columns": {
+                "id": {"type": "serial", "primary": true},
+                "name": {"type": "varchar(100)", "notnull": true, "unique": true},
+                "description": {"type": "varchar(255)"},
+                "price": {"type": "numeric(3,2)", "notnull": true},
+                "customer": {"type": "integer"},
+                "flag": {"type": "char", "notnull": true, "default": "Y"}
+            }
+        }
+   }
+}

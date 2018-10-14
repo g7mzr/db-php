@@ -1,0 +1,21 @@
+{
+    "version": "1",
+    "tables": {
+        "table1": {
+            "columns": {
+                "id": {"type": "serial", "primary": true},
+                "name": {"type": "varchar(100)", "notnull": true, "unique": true},
+                "description": {"type": "varchar(255)"},
+                "price": {"type": "numeric(3,2)", "notnull": true},
+                "customer": {"type": "integer"},
+                "flag": {"type": "char", "notnull": true, "default": "Y"}
+            },
+            "fk": {
+                "fk_table1_customer": {"columnname": "customer", "linktable": "users", "linkcolumn": "user_id"}
+            },
+            "index": {
+                "table1_name_idx": {"column": "fail", "unique": true}
+            }
+        }
+    }
+}

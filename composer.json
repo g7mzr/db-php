@@ -1,6 +1,6 @@
 {
     "name": "g7mzr/db",
-    "description": "This is a composer module for accesing databases via php",
+    "description": "This is a composer module for accessing databases via php",
     "license": "GPL-3.0-only",
     "authors": [
         {
@@ -9,7 +9,7 @@
         }
     ],
     "require": {
-        "php" : ">=7.0.2"
+        "php" : ">=7.2.0"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "2.*",

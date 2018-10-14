@@ -25,6 +25,9 @@
             <file>../tests/db.classTest.php</file>
             <file>../tests/sqldriver.classTest.php</file>
             <file>../tests/mockdriver.classTest.php</file>
+            <file>../tests/dbmanager.classTest.php</file>
+            <file>../tests/sqladmin.classTest.php</file>
+            <file> ../tests/schema.classTest.php</file>
         </testsuite>
 
     </testsuites>
@@ -33,6 +36,7 @@
             <directory suffix=".php">../src</directory>
             <exclude>
                 <directory>../src/dbconfig</directory>
+                <directory>../src/dbphpunitsupport</directory>
             </exclude>
         </whitelist>
     </filter>

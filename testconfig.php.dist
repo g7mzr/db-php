@@ -12,4 +12,5 @@ $dsn["hostspec"]  = "";
 $dsn["databasename"] = "";
 $dsn["username"] = "";
 $dsn["password"] = "";
-?>
+$dsn['adminuser'] = "";
+$dsn['adminpasswd'] = "";

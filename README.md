@@ -9,28 +9,35 @@ It is currently installed via github.
 
 To load the latest release add the following to your compose.json file
 
-{
-    "require": {
-        "g7mzr/db": "*"
-    },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url":  "git@github.com:g7mzr/db.git"
-        }
-    ]
-}
+    {
+        "require": {
+            "g7mzr/db": "*"
+        },
+        "repositories": [
+            {
+                "type": "vcs",
+                "url":  "git@github.com:g7mzr/db.git"
+            }
+        ]
+    }
 
 To load the development version add the following to your compose.json file
 
-{
-    "require": {
-        "g7mzr/db": "dev-master"
-    },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url":  "git@github.com:g7mzr/db.git"
-        }
-    ]
-}
+    {
+        "require": {
+            "g7mzr/db": "dev-master"
+        },
+        "repositories": [
+            {
+                "type": "vcs",
+                "url":  "git@github.com:g7mzr/db.git"
+            }
+        ]
+    }
+
+# Install Database
+
+This module can now create and modify PostgreSQL databases.  An example schema can be
+found at schema_example.json.  Example of how schemas are created and modified can be
+found in the *tests\schema.classTest.php* and example for creating and dropping users
+and databases can be found in the *tests\sqladmin.classTest.php* file.

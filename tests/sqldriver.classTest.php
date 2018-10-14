@@ -131,7 +131,7 @@ class DriverTest extends TestCase
      * This function tests the class Destructor
      *
      * @group unittest
-     * @group error
+     * @group DatabaseAccess
      *
      * @return null
      */
@@ -150,7 +150,7 @@ class DriverTest extends TestCase
      * This function tests that the DB Version String can be returned
      *
      * @group unittest
-     * @group error
+     * @group DatabaseAccess
      *
      * @return null
      */
@@ -164,7 +164,7 @@ class DriverTest extends TestCase
      * This function tests a record can be returned from the database
      *
      * @group unittest
-     * @group error
+     * @group DatabaseAccess
      *
      * @return null
      */
@@ -208,7 +208,7 @@ class DriverTest extends TestCase
      * This function tests a Not Found error is returned if no record is found
      *
      * @group unittest
-     * @group error
+     * @group DatabaseAccess
      *
      * @return null
      */
@@ -228,7 +228,7 @@ class DriverTest extends TestCase
      * This function tests database error is returned if an query is used
      *
      * @group unittest
-     * @group error
+     * @group DatabaseAccess
      *
      * @return null
      */
@@ -253,7 +253,7 @@ class DriverTest extends TestCase
      * This function tests for more than 1 item being returned with SelectSingle
      *
      * @group unittest
-     * @group error
+     * @group DatabaseAccess
      *
      * @return null
      */
@@ -271,7 +271,7 @@ class DriverTest extends TestCase
      * This function tests for more than 1 item using SelectMultiple
      *
      * @group unittest
-     * @group error
+     * @group DatabaseAccess
      *
      * @return null
      */
@@ -291,7 +291,7 @@ class DriverTest extends TestCase
      * by id
      *
      * @group unittest
-     * @group error
+     * @group DatabaseAccess
      *
      * @return null
      */
@@ -317,7 +317,7 @@ class DriverTest extends TestCase
      * by id
      *
      * @group unittest
-     * @group error
+     * @group DatabaseAccess
      *
      * @return null
      */
@@ -341,7 +341,7 @@ class DriverTest extends TestCase
      * This function tests for error message if an invalid query is used
      *
      * @group unittest
-     * @group error
+     * @group DatabaseAccess
      *
      * @return null
      */
@@ -378,7 +378,7 @@ class DriverTest extends TestCase
      * This function tests for more than 1 item using SelectMultiple and wildcards
      *
      * @group unittest
-     * @group error
+     * @group DatabaseAccess
      *
      * @return null
      */
@@ -404,7 +404,7 @@ class DriverTest extends TestCase
      * multiple fields
      *
      * @group unittest
-     * @group error
+     * @group DatabaseAccess
      *
      * @return null
      */
@@ -430,7 +430,7 @@ class DriverTest extends TestCase
      * This function tests for joining two tables
      *
      * @group unittest
-     * @group error
+     * @group DatabaseAccess
      *
      * @return null
      */
@@ -468,7 +468,7 @@ class DriverTest extends TestCase
      * This function tests for inserting user data to the database
      *
      * @group unittest
-     * @group error
+     * @group DatabaseAccess
      * @depends testSelectSingleRecord
      *
      * @return null
@@ -494,7 +494,7 @@ class DriverTest extends TestCase
      * This function tests for inserting user data to the database
      *
      * @group unittest
-     * @group error
+     * @group DatabaseAccess
      * @depends testSelectSingleRecord
      *
      * @return null
@@ -522,7 +522,7 @@ class DriverTest extends TestCase
      * This function tests that a database insert fails with invalid table name
      *
      * @group unittest
-     * @group error
+     * @group DatabaseAccess
      * @depends testSelectSingleRecord
      *
      * @return null
@@ -549,7 +549,7 @@ class DriverTest extends TestCase
      * an existing record
      *
      * @group unittest
-     * @group error
+     * @group DatabaseAccess
      * @depends testSelectSingleRecord
      *
      * @return null
@@ -566,7 +566,7 @@ class DriverTest extends TestCase
      * the record is not found.
      *
      * @group unittest
-     * @group error
+     * @group DatabaseAccess
      * @depends testSelectSingleRecord
      *
      * @return null
@@ -592,7 +592,7 @@ class DriverTest extends TestCase
      * sql statement is wrong
      *
      * @group unittest
-     * @group error
+     * @group DatabaseAccess
      * @depends testSelectSingleRecord
      *
      * @return null
@@ -616,7 +616,7 @@ class DriverTest extends TestCase
      * This function tests the Update function
      *
      * @group unittest
-     * @group error
+     * @group DatabaseAccess
      * @depends testSelectSingleRecord
      * @depends testInsert
      *
@@ -660,7 +660,7 @@ class DriverTest extends TestCase
      * This function tests the Update function with an AND Statement
      *
      * @group unittest
-     * @group error
+     * @group DatabaseAccess
      * @depends testSelectSingleRecord
      * @depends testInsert
      *
@@ -703,7 +703,7 @@ class DriverTest extends TestCase
      * This function tests the Update function Record not found
      *
      * @group unittest
-     * @group error
+     * @group DatabaseAccess
      * @depends testSelectSingleRecord
      * @depends testInsert
      *
@@ -728,7 +728,7 @@ class DriverTest extends TestCase
      * This function tests the Update function SQL Error
      *
      * @group unittest
-     * @group error
+     * @group DatabaseAccess
      * @depends testSelectSingleRecord
      * @depends testInsert
      *
@@ -754,7 +754,7 @@ class DriverTest extends TestCase
      * This function tests the Transaction Capability.  Commit
      *
      * @group unittest
-     * @group error
+     * @group DatabaseAccess
      * @depends testSelectSingleRecord
      * @depends testInsert
      *
@@ -797,7 +797,7 @@ class DriverTest extends TestCase
      * This function tests the Transaction Capability.  Rollback
      *
      * @group unittest
-     * @group error
+     * @group DatabaseAccess
      * @depends testSelectSingleRecord
      * @depends testInsert
      *
@@ -819,7 +819,7 @@ class DriverTest extends TestCase
         }
 
         $transactionend =$this->object->endTransaction(false);
-        $this->assertFalse($transactionend);
+        $this->assertTrue($transactionend);
 
         // Data fields to be returned
         $searchfields = array('user_id', 'username', 'password', 'email');
@@ -843,7 +843,7 @@ class DriverTest extends TestCase
      * This function tests the Delete Capability
      *
      * @group unittest
-     * @group error
+     * @group DatabaseAccess
      * @depends testSelectSingleRecord
      * @depends testInsert
      *
@@ -892,7 +892,7 @@ class DriverTest extends TestCase
      * This function tests the Delete Capability using multiple search fields
      *
      * @group unittest
-     * @group error
+     * @group DatabaseAccess
      * @depends testSelectSingleRecord
      * @depends testInsert
      *
@@ -939,7 +939,7 @@ class DriverTest extends TestCase
      * This function tests the Delete Capability invalid SQL
      *
      * @group unittest
-     * @group error
+     * @group DatabaseAccess
      * @depends testSelectSingleRecord
      * @depends testInsert
      *
@@ -963,7 +963,7 @@ class DriverTest extends TestCase
      * This function tests the Delete Multiple Capability
      *
      * @group unittest
-     * @group error
+     * @group DatabaseAccess
      * @depends testSelectSingleRecord
      * @depends testInsert
      *
@@ -1013,7 +1013,7 @@ class DriverTest extends TestCase
      * This function tests the Delete Multiple Capability
      *
      * @group unittest
-     * @group error
+     * @group DatabaseAccess
      * @depends testSelectSingleRecord
      * @depends testInsert
      *
@@ -1064,7 +1064,7 @@ class DriverTest extends TestCase
      * This function tests the Delete Multiple Capability
      *
      * @group unittest
-     * @group error
+     * @group DatabaseAccess
      * @depends testSelectSingleRecord
      * @depends testInsert
      *
@@ -1089,7 +1089,7 @@ class DriverTest extends TestCase
      * This function tests the row count
      *
      * @group unittest
-     * @group error
+     * @group DatabaseAccess
      *
      * @return null
      */

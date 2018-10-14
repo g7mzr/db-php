@@ -12,8 +12,9 @@ namespace g7mzr\db\drivers;
 use g7mzr\db\drivers\InterfaceDatabaseDriver;
 
 /**
- * DB_DRIVER_PGSQL Class is the class for the pgsql database drivers.  It implements
- * the DBDRIVERIF interface to provide access to the PGSQL database via PDO
+ * DatabaseDriverpgsql is the class for the pgsql database drivers.  It implements
+ * the InterfaceDatabaseDriver interface to provide access to the PGSQL database
+ * via PDO
  *
  * @category Webtemplate
  * @package  Database
@@ -189,12 +190,11 @@ class DatabaseDriverpgsql implements InterfaceDatabaseDriver
         if ($commit == true) {
             $this->stmt = $this->pdo->prepare("COMMIT");
             $resultID = $this->stmt->execute();
-            return true;
         } else {
             $this->stmt = $this->pdo->prepare("ROLLBACK");
             $resultID = $this->stmt->execute();
-            return false;
         }
+        return $resultID;
     }
 
     /**
