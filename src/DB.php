@@ -37,7 +37,9 @@ class DB
         if (version_compare(phpversion(), $phpversion, "<=")) {
             return false;
         }
-        $fileName = dirname(__FILE__). '/drivers/' . $drivername . '.php';
+
+        $localname = strtolower($drivername);
+        $fileName = dirname(__FILE__) . '/drivers/' . $localname . '/DatabaseDriver.php';
         return file_exists($fileName);
     }
 
@@ -53,7 +55,8 @@ class DB
      */
     public function loaddriver($drivername)
     {
-        $fileName = dirname(__FILE__) . '/drivers/' . $drivername . '.php';
+        $localname = strtolower($drivername);
+        $fileName = dirname(__FILE__) . '/drivers/' . $localname . '/DatabaseDriver.php';
         $include =  @include_once $fileName ;
         if (!$include) {
             $msg = gettext('Unable to load database driver') . " " .$drivername;
@@ -87,7 +90,7 @@ class DB
             return $err;
         }
         $driver = $dsn['dbtype'];
-        $className = '\g7mzr\db\drivers\DatabaseDriver'.strtolower($driver);
+        $className = '\g7mzr\db\drivers\\' .strtolower($driver) . '\DatabaseDriver';
         $err = DB::loaddriver($driver);
         if (\g7mzr\db\common\Common::isError($err)) {
             return $err;

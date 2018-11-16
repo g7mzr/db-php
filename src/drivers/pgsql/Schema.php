@@ -7,9 +7,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace g7mzr\db\manager;
+namespace g7mzr\db\drivers\pgsql;
 
-use g7mzr\db\manager\InterfaceDatabaseSchema;
+use g7mzr\db\interfaces\InterfaceDatabaseSchema;
 
 /**
  * DB_DRIVER_PGSQL Class is the class for the pgsql database drivers.  It implements
@@ -22,7 +22,7 @@ use g7mzr\db\manager\InterfaceDatabaseSchema;
  * @license  View the license file distributed with this source code
  **/
 
-class PGSQLSchema implements InterfaceDatabaseSchema
+class Schema implements InterfaceDatabaseSchema
 {
     /**
      * Database Data Source Name

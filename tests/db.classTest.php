@@ -163,7 +163,7 @@ class DBTest extends TestCase
     {
         global $dsn;
         $driverloaded = \g7mzr\db\DB::load($dsn, true);
-        $result = is_a($driverloaded, '\g7mzr\db\drivers\DatabaseDriverpgsql');
+        $result = is_a($driverloaded, '\g7mzr\db\drivers\pgsql\DatabaseDriver');
         $this->assertTrue($result);
         $driverloaded = null;
     }

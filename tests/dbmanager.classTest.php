@@ -104,7 +104,7 @@ class DBManagerTest extends TestCase
         $this->assertTrue($result);
         $this->assertTrue(is_a(
             $this->object->getAdminDriver(),
-            '\g7mzr\db\manager\InterfaceDatabaseAdmin'
+            '\g7mzr\db\interfaces\InterfaceDatabaseAdmin'
         ));
         $this->assertNull($this->object->getSchemaDriver());
     }
@@ -123,7 +123,7 @@ class DBManagerTest extends TestCase
         $this->assertTrue($result);
         $this->assertTrue(is_a(
             $this->object->getSchemaDriver(),
-            '\g7mzr\db\manager\InterfaceDatabaseSchema'
+            '\g7mzr\db\interfaces\InterfaceDatabaseSchema'
         ));
         $this->assertNull($this->object->getAdminDriver());
     }
@@ -270,7 +270,7 @@ class DBManagerTest extends TestCase
 
         $localdsn = $dsn;
         $localdsn['password'] = "fakepassword";
-        
+
         try {
             $dbobject = new \g7mzr\db\DBManager(
                 $localdsn,

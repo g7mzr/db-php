@@ -7,9 +7,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace g7mzr\db\drivers;
+namespace g7mzr\db\drivers\pgsql;
 
-use g7mzr\db\drivers\InterfaceDatabaseDriver;
+use g7mzr\db\interfaces\InterfaceDatabaseDriver;
 
 /**
  * DatabaseDriverpgsql is the class for the pgsql database drivers.  It implements
@@ -22,7 +22,7 @@ use g7mzr\db\drivers\InterfaceDatabaseDriver;
  * @license  View the license file distributed with this source code
  **/
 
-class DatabaseDriverpgsql implements InterfaceDatabaseDriver
+class DatabaseDriver implements InterfaceDatabaseDriver
 {
     /**
      * Database MDB2 Data Source Name

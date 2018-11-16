@@ -7,7 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace g7mzr\db\manager;
+namespace g7mzr\db\interfaces;
 
 /**
  * Defines the public interface of administrating the RMDB .  This

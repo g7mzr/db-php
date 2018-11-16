@@ -566,7 +566,7 @@ class SchemaTest extends TestCase
             $this->fail($loadresult->getMessage());
         }
 
-        // Get the sche,a from the database
+        // Get the schema from the database
         $getResult = $this->schemamanager->getSchema();
         if (is_a($getResult, '\g7mzr\db\common\Error')) {
             $this->fail("Error Getting schema");

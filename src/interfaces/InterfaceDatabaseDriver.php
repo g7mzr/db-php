@@ -7,7 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace g7mzr\db\drivers;
+namespace g7mzr\db\interfaces;
 
 /**
  * DBDRIVERIF defines the public interface of the Webtemplate database driver.  This

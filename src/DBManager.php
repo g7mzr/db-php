@@ -57,7 +57,7 @@ class DBManager
     /**
      * Property: Admin Driver
      *
-     * @var \g7mzr\db\manager\InterfaceDatabaseAdmin
+     * @var \g7mzr\db\interfaces\InterfaceDatabaseAdmin
      * @access protected
      */
     protected $admindriver;
@@ -65,7 +65,7 @@ class DBManager
     /**
      * Property: SchemaDriver
      *
-     * @var \g7mzr\db\manager\InterfaceDatabaseSchema
+     * @var \g7mzr\db\interfaces\InterfaceDatabaseSchema
      * @access protected
      */
     protected $schemadriver;
@@ -134,7 +134,7 @@ class DBManager
             $dsn["databasename"] = "template1";
             $dsn["username"] = $this->adminuser;
             $dsn["password"] = $this->adminpasswd;
-            $classname = 'g7mzr\\db\\manager\\'. strtoupper($dsn['dbtype']) . 'Admin';
+            $classname = '\g7mzr\\db\\drivers\\'. strtolower($dsn['dbtype']) . '\Admin';
             if (class_exists($classname)) {
                 try {
                     $this->admindriver = new $classname(
@@ -157,7 +157,7 @@ class DBManager
                 $this->admindriver = null;
             }
         } elseif ($function == "schema") {
-            $classname = 'g7mzr\\db\\manager\\'. strtoupper($this->dsn['dbtype']) . 'Schema';
+            $classname = 'g7mzr\\db\\drivers\\'. strtolower($this->dsn['dbtype']) . '\Schema';
             if (class_exists($classname)) {
                 try {
                     $this->schemadriver = new $classname(
@@ -196,7 +196,7 @@ class DBManager
      *
      * This function returns the admin Driver pointer
      *
-     * @return \g7mzr\db\manager\InterfaceDatabaseAdmin  Admin Driver
+     * @return \g7mzr\db\interfaces\InterfaceDatabaseAdmin  Admin Driver
      */
     public function getAdminDriver()
     {
@@ -206,9 +206,9 @@ class DBManager
     /**
      * Database Manager getAdminDriver
      *
-     * This function returns the sechema Driver pointer
+     * This function returns the schema Driver pointer
      *
-     * @return \g7mzr\db\manager\InterfaceDatabaseSchema Schema Driver
+     * @return \g7mzr\db\interfaces\InterfaceDatabaseSchema Schema Driver
      */
     public function getSchemaDriver()
     {

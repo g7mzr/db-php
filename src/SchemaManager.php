@@ -67,7 +67,14 @@ class SchemaManager
     public function __construct($dbManager)
     {
         $this->dbManager = $dbManager;
-        $this->dbManager->setMode('schema');
+        $result = $this->dbManager->setMode('schema');
+        if (\g7mzr\db\common\Common::isError($result)) {
+            throw new \g7mzr\db\common\DBException(
+                'Unable to set dbManger Mode',
+                1,
+                $result->getMessage()
+            );
+        }
     }
 
     /**

@@ -7,9 +7,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace g7mzr\db\drivers;
+namespace g7mzr\db\drivers\mock;
 
-use g7mzr\db\drivers\InterfaceDatabaseDriver;
+use g7mzr\db\interfaces\InterfaceDatabaseDriver;
 
 /**
  * DB_DRIVER_MOCK Class is the mock class for unit testing.  It implements
@@ -21,7 +21,7 @@ use g7mzr\db\drivers\InterfaceDatabaseDriver;
  * @license  View the license file distributed with this source code
 **/
 
-class DatabaseDrivermock implements InterfaceDatabaseDriver
+class DatabaseDriver implements InterfaceDatabaseDriver
 {
     /**
      * Database MDB2 Data Source Name

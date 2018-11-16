@@ -21,7 +21,11 @@ class Common
 {
 
     /**
-     * This method is used to check if the supplied variable is an error type
+     * This method is used to check if the supplied variable is an DB error type.
+     *
+     * This method is used to check if the variable $data is of type
+     * \g7mzr\db\common\Error which is the DB error object.  It will return true if
+     * $data is of type \g7mzr\db\common\Error.
      *
      * @param mixed $data The value to test
      *
@@ -35,13 +39,16 @@ class Common
     }
 
     /**
-     * This method is raise an error
+     * This method is used to create an error object of type \g7mzr\db\common\Error.
+     *
+     * This function is used to create an object of type \g7mzr\db\common\Error which
+     * is a error object for the DB access module.
      *
      * @param mixed  $message   a text message or error object
      * @param int    $code      The error code
      * @param string $dbmessage The error message from the PDO Driver.
      *
-     * @return object an Error object
+     * @return object A DB Access Module Error object
      *
      * @access public
      */
