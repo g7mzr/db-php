@@ -2,14 +2,13 @@
 #
 # Use of `relative_permalinks` ensures post links from the index work properly.
 permalink:           pretty
-relative_permalinks: true
 
 # Setup
 title:               DB-PHP
 tagline:             'A PHP Database Composer Access Module'
 description:         'A PHP Database Composer Access Module.'
 url:                 https://g7mzr.github.io/db-php
-baseurl:             'https://g7mzr.github.io/db-php/'
+baseurl:             https://g7mzr.github.io/db-php
 #paginate:            5
 
 # About/contact
