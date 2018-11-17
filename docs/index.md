@@ -1,5 +1,5 @@
-#About
+# About
 
-This site will maintain the documentation for DB/
+This site will hold the documentation for DB which is currently under debelopment.
 
 
