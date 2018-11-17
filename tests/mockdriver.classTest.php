@@ -45,9 +45,16 @@ class MockDriverTest extends TestCase
         global $dsn;
         $localdsn = $dsn;
         $localdsn['dbtype'] = 'mock';
-        $this->object = \g7mzr\db\DB::load($localdsn, true);
-        if (\g7mzr\db\common\Common::isError($this->object)) {
-            print_r($this->object);
+
+        try {
+            $this->object = new \g7mzr\db\DBManager($localdsn, "", "", true);
+        } catch (\throwable $e) {
+            throw new \Exception('Unable to connect to the database');
+        }
+
+        $result = $this->object->setMode("datadriver");
+        if (\g7mzr\db\common\Common::isError($result)) {
+            print_r($result);
             exit(1);
         }
     }
@@ -60,7 +67,7 @@ class MockDriverTest extends TestCase
      */
     protected function tearDown()
     {
-        $this->object->disconnect();
+        $this->object->getDataDriver()->disconnect();
     }
 
     /**
@@ -76,11 +83,17 @@ class MockDriverTest extends TestCase
         global $dsn;
         $localdsn = $dsn;
         $localdsn['dbtype'] = 'mock';
-        $db = \g7mzr\db\DB::load($localdsn, true);
-        if (\g7mzr\db\common\Common::isError($db)) {
-            $this->fail("Unable to create mock DB Object");
+        try {
+            $this->object = new \g7mzr\db\DBManager($dsn, "", "", true);
+        } catch (\throwable $e) {
+            throw new \Exception('Unable to connect to the database');
         }
-        unset($db);
+
+        $result = $this->object->setMode("datadriver");
+        if (\g7mzr\db\common\Common::isError($result)) {
+            $this->fail('Unable to create Class');
+        }
+        $this->object->getDataDriver()->disconnect();
         $this->assertTrue(true);
     }
 
@@ -100,8 +113,8 @@ class MockDriverTest extends TestCase
             )
         );
         $data = array('version' => 'Mock 1.0.0');
-        $this->object->control($functions, $data);
-        $result = $this->object->getDBVersion();
+        $this->object->getDataDriver()->control($functions, $data);
+        $result = $this->object->getDataDriver()->getDBVersion();
         $this->assertContains('Mock 1.0.0', $result);
     }
 
@@ -116,7 +129,7 @@ class MockDriverTest extends TestCase
     public function testDBVersionFail()
     {
         // Test with no Control Data
-        $result = $this->object->getDBVersion();
+        $result = $this->object->getDataDriver()->getDBVersion();
         $this->assertContains('Error Getting Database Version', $result);
 
         //test with pass element missing from control data
@@ -126,8 +139,8 @@ class MockDriverTest extends TestCase
             )
         );
         $data = array('version' => 'Mock 1.0.0');
-        $this->object->control($functions, $data);
-        $result = $this->object->getDBVersion();
+        $this->object->getDataDriver()->control($functions, $data);
+        $result = $this->object->getDataDriver()->getDBVersion();
         $this->assertContains('Error Getting Database Version', $result);
 
         //test with control data set to fail
@@ -136,8 +149,8 @@ class MockDriverTest extends TestCase
                 'pass' => false
             )
         );
-        $this->object->control($functions, $data);
-        $result = $this->object->getDBVersion();
+        $this->object->getDataDriver()->control($functions, $data);
+        $result = $this->object->getDataDriver()->getDBVersion();
         $this->assertContains('Error Getting Database Version', $result);
     }
 
@@ -157,8 +170,8 @@ class MockDriverTest extends TestCase
             )
         );
         $data = array();
-        $this->object->control($functions, $data);
-        $result = $this->object->startTransaction();
+        $this->object->getDataDriver()->control($functions, $data);
+        $result = $this->object->getDataDriver()->startTransaction();
         $this->assertTrue($result);
     }
 
@@ -173,7 +186,7 @@ class MockDriverTest extends TestCase
     public function teststartTransactionFail()
     {
         // No Control Data
-        $result = $this->object->startTransaction();
+        $result = $this->object->getDataDriver()->startTransaction();
         $this->assertFalse($result);
 
          // starttransaction missing from control data
@@ -183,8 +196,8 @@ class MockDriverTest extends TestCase
             )
         );
         $data = array();
-        $this->object->control($functions, $data);
-        $result = $this->object->startTransaction();
+        $this->object->getDataDriver()->control($functions, $data);
+        $result = $this->object->getDataDriver()->startTransaction();
         $this->assertFalse($result);
 
        // Control Data to Fail
@@ -194,8 +207,8 @@ class MockDriverTest extends TestCase
             )
         );
         $data = array();
-        $this->object->control($functions, $data);
-        $result = $this->object->startTransaction();
+        $this->object->getDataDriver()->control($functions, $data);
+        $result = $this->object->getDataDriver()->startTransaction();
         $this->assertFalse($result);
     }
 
@@ -215,8 +228,8 @@ class MockDriverTest extends TestCase
             )
         );
         $data = array();
-        $this->object->control($functions, $data);
-        $result = $this->object->endTransaction(true);
+        $this->object->getDataDriver()->control($functions, $data);
+        $result = $this->object->getDataDriver()->endTransaction(true);
         $this->assertTrue($result);
     }
 
@@ -231,7 +244,7 @@ class MockDriverTest extends TestCase
     public function testendTransactionFail()
     {
         // No Control Data
-        $result = $this->object->endTransaction(true);
+        $result = $this->object->getDataDriver()->endTransaction(true);
         $this->assertFalse($result);
 
          // starttransaction missing from control data
@@ -241,8 +254,8 @@ class MockDriverTest extends TestCase
             )
         );
         $data = array();
-        $this->object->control($functions, $data);
-        $result = $this->object->startTransaction();
+        $this->object->getDataDriver()->control($functions, $data);
+        $result = $this->object->getDataDriver()->startTransaction();
         $this->assertFalse($result);
 
        // Control Data to Fail
@@ -252,8 +265,8 @@ class MockDriverTest extends TestCase
             )
         );
         $data = array();
-        $this->object->control($functions, $data);
-        $result = $this->object->startTransaction();
+        $this->object->getDataDriver()->control($functions, $data);
+        $result = $this->object->getDataDriver()->startTransaction();
         $this->assertFalse($result);
     }
 
@@ -273,9 +286,9 @@ class MockDriverTest extends TestCase
             )
         );
         $data = array();
-        $this->object->control($functions, $data);
+        $this->object->getDataDriver()->control($functions, $data);
         $insertdata = array("user" => "phpunit");
-        $result = $this->object->dbInsert('users', $insertdata);
+        $result = $this->object->getDataDriver()->dbInsert('users', $insertdata);
         $this->assertTrue($result);
     }
 
@@ -291,7 +304,7 @@ class MockDriverTest extends TestCase
     {
         // No Control Data
         $insertdata = array("user" => "phpunit");
-        $result = $this->object->dbInsert('users', $insertdata);
+        $result = $this->object->getDataDriver()->dbInsert('users', $insertdata);
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
         $this->assertContains("SQL Query Error", $result->getMessage());
 
@@ -302,9 +315,9 @@ class MockDriverTest extends TestCase
             )
         );
         $data = array();
-        $this->object->control($functions, $data);
+        $this->object->getDataDriver()->control($functions, $data);
         $insertdata = array("user" => "phpunit");
-        $result = $this->object->dbInsert('users', $insertdata);
+        $result = $this->object->getDataDriver()->dbInsert('users', $insertdata);
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
         $this->assertContains("SQL Query Error", $result->getMessage());
 
@@ -315,9 +328,9 @@ class MockDriverTest extends TestCase
             )
         );
         $data = array();
-        $this->object->control($functions, $data);
+        $this->object->getDataDriver()->control($functions, $data);
         $insertdata = array("user" => "phpunit");
-        $result = $this->object->dbInsert('users', $insertdata);
+        $result = $this->object->getDataDriver()->dbInsert('users', $insertdata);
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
         $this->assertContains("SQL Query Error", $result->getMessage());
     }
@@ -339,8 +352,8 @@ class MockDriverTest extends TestCase
             )
         );
         $data = array();
-        $this->object->control($functions, $data);
-        $result = $this->object->dbInsertid(
+        $this->object->getDataDriver()->control($functions, $data);
+        $result = $this->object->getDataDriver()->dbInsertid(
             'tableName',
             'idfield',
             'srchfield',
@@ -355,8 +368,8 @@ class MockDriverTest extends TestCase
             )
         );
         $data = array('srchdata' => 6);
-        $this->object->control($functions, $data);
-        $result = $this->object->dbInsertid(
+        $this->object->getDataDriver()->control($functions, $data);
+        $result = $this->object->getDataDriver()->dbInsertid(
             'tableName',
             'idfield',
             'srchfield',
@@ -376,7 +389,7 @@ class MockDriverTest extends TestCase
     public function testdbInsertIDFail()
     {
         // Test fail with no control data
-            $result = $this->object->dbInsertid(
+            $result = $this->object->getDataDriver()->dbInsertid(
                 'tableName',
                 'idfield',
                 'srchfield',
@@ -392,8 +405,8 @@ class MockDriverTest extends TestCase
             )
         );
         $data = array();
-        $this->object->control($functions, $data);
-        $result = $this->object->dbInsertid(
+        $this->object->getDataDriver()->control($functions, $data);
+        $result = $this->object->getDataDriver()->dbInsertid(
             'tableName',
             'idfield',
             'srchfield',
@@ -409,8 +422,8 @@ class MockDriverTest extends TestCase
             )
         );
         $data = array('srchdata' => 6);
-        $this->object->control($functions, $data);
-        $result = $this->object->dbInsertid(
+        $this->object->getDataDriver()->control($functions, $data);
+        $result = $this->object->getDataDriver()->dbInsertid(
             'tableName',
             'idfield',
             'srchfield',
@@ -436,10 +449,10 @@ class MockDriverTest extends TestCase
             )
         );
         $data = array();
-        $this->object->control($functions, $data);
+        $this->object->getDataDriver()->control($functions, $data);
         $updatedata = array("user" => "phpunit");
         $searchdata = array("user_id" => 4);
-        $result = $this->object->dbUpdate('users', $updatedata, $searchdata);
+        $result = $this->object->getDataDriver()->dbUpdate('users', $updatedata, $searchdata);
         $this->assertTrue($result);
     }
 
@@ -458,7 +471,7 @@ class MockDriverTest extends TestCase
         $searchdata = array("user_id" => 4);
 
         // No control data
-        $result = $this->object->dbUpdate('users', $updatedata, $searchdata);
+        $result = $this->object->getDataDriver()->dbUpdate('users', $updatedata, $searchdata);
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
         $this->assertContains("SQL Query Error", $result->getMessage());
 
@@ -469,8 +482,8 @@ class MockDriverTest extends TestCase
             )
         );
         $data = array();
-        $this->object->control($functions, $data);
-        $result = $this->object->dbUpdate('users', $updatedata, $searchdata);
+        $this->object->getDataDriver()->control($functions, $data);
+        $result = $this->object->getDataDriver()->dbUpdate('users', $updatedata, $searchdata);
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
         $this->assertContains("SQL Query Error", $result->getMessage());
 
@@ -481,8 +494,8 @@ class MockDriverTest extends TestCase
             )
         );
         $data = array();
-        $this->object->control($functions, $data);
-        $result = $this->object->dbUpdate('users', $updatedata, $searchdata);
+        $this->object->getDataDriver()->control($functions, $data);
+        $result = $this->object->getDataDriver()->dbUpdate('users', $updatedata, $searchdata);
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
         $this->assertContains("SQL Query Error", $result->getMessage());
     }
@@ -509,10 +522,10 @@ class MockDriverTest extends TestCase
                 'passwd' => 'passwd'
             )
         );
-        $this->object->control($functions, $data);
+        $this->object->getDataDriver()->control($functions, $data);
         $fields = array("user_id", "username", "passwd");
         $searchdata = array("user_id" => 1);
-        $result = $this->object->dbSelectSingle('users', $fields, $searchdata);
+        $result = $this->object->getDataDriver()->dbSelectSingle('users', $fields, $searchdata);
         $this->assertTrue(is_array($result));
         $this->assertEquals('phpunit', $result['username']);
     }
@@ -540,10 +553,10 @@ class MockDriverTest extends TestCase
                 'passwd' => 'passwd'
             )
         );
-        $this->object->control($functions, $data);
+        $this->object->getDataDriver()->control($functions, $data);
         $fields = array("user_id", "username", "passwd");
         $searchdata = array("user_id" => 1);
-        $result = $this->object->dbSelectSingle('users', $fields, $searchdata);
+        $result = $this->object->getDataDriver()->dbSelectSingle('users', $fields, $searchdata);
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
         $this->assertContains("Not Found", $result->getMessage());
     }
@@ -563,7 +576,7 @@ class MockDriverTest extends TestCase
         $searchdata = array("user_id" => 1);
 
         // No Control Data
-        $result = $this->object->dbSelectSingle('users', $fields, $searchdata);
+        $result = $this->object->getDataDriver()->dbSelectSingle('users', $fields, $searchdata);
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
         $this->assertContains("SQL Query Error", $result->getMessage());
 
@@ -580,8 +593,8 @@ class MockDriverTest extends TestCase
                 'passwd' => 'passwd'
             )
         );
-        $this->object->control($functions, $data);
-        $result = $this->object->dbSelectSingle('users', $fields, $searchdata);
+        $this->object->getDataDriver()->control($functions, $data);
+        $result = $this->object->getDataDriver()->dbSelectSingle('users', $fields, $searchdata);
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
         $this->assertContains("SQL Query Error", $result->getMessage());
 
@@ -598,8 +611,8 @@ class MockDriverTest extends TestCase
                 'passwd' => 'passwd'
             )
         );
-        $this->object->control($functions, $data);
-        $result = $this->object->dbSelectSingle('users', $fields, $searchdata);
+        $this->object->getDataDriver()->control($functions, $data);
+        $result = $this->object->getDataDriver()->dbSelectSingle('users', $fields, $searchdata);
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
         $this->assertContains("SQL Query Error", $result->getMessage());
     }
@@ -626,10 +639,10 @@ class MockDriverTest extends TestCase
                 'passwd' => 'passwd'
             )
         );
-        $this->object->control($functions, $data);
+        $this->object->getDataDriver()->control($functions, $data);
         $fields = array("user_id", "username", "passwd");
         $searchdata = array("user_id" => 1);
-        $result = $this->object->dbSelectMultiple('users', $fields, $searchdata);
+        $result = $this->object->getDataDriver()->dbSelectMultiple('users', $fields, $searchdata);
         $this->assertTrue(is_array($result));
         $this->assertEquals('phpunit', $result['username']);
     }
@@ -650,9 +663,9 @@ class MockDriverTest extends TestCase
             )
         );
         $data = array();
-        $this->object->control($functions, $data);
+        $this->object->getDataDriver()->control($functions, $data);
         $searchdata = array("user_id" => 1);
-        $result = $this->object->dbDelete('users', $searchdata);
+        $result = $this->object->getDataDriver()->dbDelete('users', $searchdata);
         $this->assertTrue($result);
     }
 
@@ -670,7 +683,7 @@ class MockDriverTest extends TestCase
         $searchdata = array("user_id" => 1);
 
         //  No Control Data
-        $result = $this->object->dbDelete('users', $searchdata);
+        $result = $this->object->getDataDriver()->dbDelete('users', $searchdata);
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
         $this->assertContains("SQL Query Error", $result->getMessage());
 
@@ -681,8 +694,8 @@ class MockDriverTest extends TestCase
             )
         );
         $data = array();
-        $this->object->control($functions, $data);
-        $result = $this->object->dbDelete('users', $searchdata);
+        $this->object->getDataDriver()->control($functions, $data);
+        $result = $this->object->getDataDriver()->dbDelete('users', $searchdata);
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
         $this->assertContains("SQL Query Error", $result->getMessage());
 
@@ -693,8 +706,8 @@ class MockDriverTest extends TestCase
             )
         );
         $data = array();
-        $this->object->control($functions, $data);
-        $result = $this->object->dbDelete('users', $searchdata);
+        $this->object->getDataDriver()->control($functions, $data);
+        $result = $this->object->getDataDriver()->dbDelete('users', $searchdata);
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
         $this->assertContains("SQL Query Error", $result->getMessage());
     }
@@ -713,7 +726,7 @@ class MockDriverTest extends TestCase
         $searchdata = array("user_id" => 1);
 
         //  No Control Data implemented
-        $result = $this->object->dbDeleteMultiple('users', $searchdata);
+        $result = $this->object->getDataDriver()->dbDeleteMultiple('users', $searchdata);
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
         $this->assertContains("SQL Query Error", $result->getMessage());
     }
@@ -729,7 +742,7 @@ class MockDriverTest extends TestCase
      */
     public function testrowCount()
     {
-        $result = $this->object->rowCount();
+        $result = $this->object->getDataDriver()->rowCount();
         $this->assertEquals(0, $result);
 
 
@@ -739,8 +752,8 @@ class MockDriverTest extends TestCase
             )
         );
         $data = array('rowcount' => 6);
-        $this->object->control($functions, $data);
-        $result = $this->object->rowCount();
+        $this->object->getDataDriver()->control($functions, $data);
+        $result = $this->object->getDataDriver()->rowCount();
         $this->assertEquals(6, $result);
     }
 }

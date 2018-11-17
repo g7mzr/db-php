@@ -202,7 +202,7 @@ class SchemaTest extends TestCase
      */
     public function testLoadNewSchemaFailInvalidFormat()
     {
-        $filename = __DIR__ . "/db.classTest.php";
+        $filename = __DIR__ . "/error.classTest.php";
         $loadresult = $this->schemamanager->loadNewSchema($filename);
         $this->assertTrue(is_a($loadresult, "\g7mzr\db\common\Error"));
         $this->assertContains(

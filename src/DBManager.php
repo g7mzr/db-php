@@ -9,7 +9,58 @@
  */
 namespace g7mzr\db;
 
-require_once __DIR__ . '/common/errorCodes.php';
+/**
+ * The list below contains the error codes for the DB Module
+ *
+ * If you add a code here make sure you add it to the textual version
+ * in DB::errorMessage()
+ */
+
+/**
+ * No Error
+ */
+define('DB_OK', true);
+
+/**
+ * Unspecified error
+ */
+define('DB_ERROR', -1);
+
+/**
+ * Search Parameters not found
+ */
+define('DB_ERROR_NOT_FOUND', -2);
+
+/**
+ * User or User:Password not found in database.
+ */
+define('DB_USER_NOT_FOUND', -3);
+
+/**
+ * Unable to connect to the database
+ */
+define('DB_CANNOT_CONNECT', -4);
+
+/**
+ * Error running DB Query
+ */
+define('DB_ERROR_QUERY', -5);
+
+/**
+ * Error Entering a Transaction
+ */
+define('DB_ERROR_TRANSACTION', -6);
+
+/**
+ * Error Saving Data
+ */
+define('DB_ERROR_SAVE', -7);
+
+/**
+ * Error Not Implemented
+ */
+define('DB_NOT_IMPLEMENTED', -8);
+
 /**
  * dbManger Class is the class for accessing for managing RDMS users, databases and
  * schemas
@@ -71,6 +122,14 @@ class DBManager
     protected $schemadriver;
 
     /**
+     * Property: DataDriver
+     *
+     * @var \g7mzr\db\interfaves\InterfaceDatabaseDriver
+     * @access protected
+     */
+    protected $datadriver;
+
+    /**
      * Database Manager Class Constructor
      *
      * Sets up the Database Manager Class
@@ -90,6 +149,7 @@ class DBManager
         $this->persistent = $persistent;
         $this->admindriver = null;
         $this->schemadriver = null;
+        $this->datadriver = null;
     }
 
     /**
@@ -104,14 +164,15 @@ class DBManager
         $this->persistent = false;
         $this->admindriver = null;
         $this->schemadriver = null;
+        $this->datadriver = null;
     }
 
     /**
      * Database Manager setMode
      *
      * This function connects the dbManager to the correct function and database
-     * driver.  The functions it can chose are "admin" or "schema".  Any other
-     * options will throw an error
+     * driver.  The functions it can chose are "admin", "schema" or "dataaccess.
+     * Any other options will throw an error
      *
      * @param string $function The function that is to be used.
      *
@@ -125,9 +186,11 @@ class DBManager
         // Reset the database access variables
         $this->admindriver = null;
         $this->schemadriver = null;
+        $this->datadriver = null;
         $driverError = "";
 
         $errorMsg = gettext("Invalid Database Manager function selected");
+
         if ($function == "admin") {
             $dsn["dbtype"] = $this->dsn['dbtype'];
             $dsn["hostspec"]  = $this->dsn['hostspec'];
@@ -179,6 +242,29 @@ class DBManager
                 $functionselected = false;
                 $this->admindriver = null;
             }
+        } elseif ($function == "datadriver") {
+            $classname = 'g7mzr\\db\\drivers\\'. strtolower($this->dsn['dbtype']) . '\DatabaseDriver';
+            if (class_exists($classname)) {
+                try {
+                    $this->datadriver = new $classname(
+                        $this->dsn,
+                        $this->persistent
+                     );
+                } catch (\Throwable $ex) {
+                    $errorMsg = gettext(
+                        "Admin: Unable to connect to database for data access"
+                    );
+                    $functionselected = false;
+                    $this->datadriver = null;
+                    $driverError = $ex->getMessage();
+                }
+            } else {
+                $errorMsg = gettext(
+                    "Admin: Unable to connect to database for data access"
+                );
+                $functionselected = false;
+                $this->datadriver = null;
+            }
         } else {
             $errorMsg = gettext("Invalid Database Manager function selected");
             $functionselected = false;
@@ -200,6 +286,12 @@ class DBManager
      */
     public function getAdminDriver()
     {
+        if ($this->admindriver === null) {
+            throw new \g7mzr\db\common\DBException(
+                "Admin Driver not initalised",
+                DB_ERROR
+            );
+        }
         return $this->admindriver;
     }
 
@@ -212,7 +304,31 @@ class DBManager
      */
     public function getSchemaDriver()
     {
+        if ($this->schemadriver === null) {
+            throw new \g7mzr\db\common\DBException(
+                "Schema Driver not initalised",
+                DB_ERROR
+            );
+        }
         return $this->schemadriver;
+    }
+
+    /**
+     * Database Manager getAdminDriver
+     *
+     * This function returns the schema Driver pointer
+     *
+     * @return \g7mzr\db\interfaces\InterfaceDatabaseDriver
+     */
+    public function getDataDriver()
+    {
+        if ($this->datadriver === null) {
+            throw new \g7mzr\db\common\DBException(
+                "Data Driver not initalised",
+                DB_ERROR
+            );
+        }
+        return $this->datadriver;
     }
 
     /**

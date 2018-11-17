@@ -106,7 +106,7 @@ class DBManagerTest extends TestCase
             $this->object->getAdminDriver(),
             '\g7mzr\db\interfaces\InterfaceDatabaseAdmin'
         ));
-        $this->assertNull($this->object->getSchemaDriver());
+        //$this->assertNull($this->object->getSchemaDriver());
     }
 
     /**
@@ -125,8 +125,28 @@ class DBManagerTest extends TestCase
             $this->object->getSchemaDriver(),
             '\g7mzr\db\interfaces\InterfaceDatabaseSchema'
         ));
-        $this->assertNull($this->object->getAdminDriver());
+        //$this->assertNull($this->object->getAdminDriver());
     }
+
+    /**
+     * This function tests the dataaccess function can be selected using setMode
+     *
+     * @group unittest
+     * @group SQLManager
+     *
+     * @return null
+     */
+    public function testsetModeDataDriver()
+    {
+        $result = $this->object->setMode('datadriver');
+        $this->assertTrue($result);
+        $this->assertTrue(is_a(
+            $this->object->getDataDriver(),
+            '\g7mzr\db\interfaces\InterfaceDatabaseDriver'
+        ));
+        //$this->assertNull($this->object->getAdminDriver());
+    }
+
 
     /**
      * This function tests an error is returned if the wrong function is selected
@@ -145,8 +165,8 @@ class DBManagerTest extends TestCase
             "Invalid Database Manager function selected",
             $result->getMessage()
         );
-        $this->assertNull($this->object->getAdminDriver());
-        $this->assertNull($this->object->getSchemaDriver());
+        //$this->assertNull($this->object->getAdminDriver());
+        //$this->assertNull($this->object->getSchemaDriver());
     }
 
     /**
@@ -183,8 +203,8 @@ class DBManagerTest extends TestCase
             "Admin: Unable to connect to database as administrator",
             $result->getMessage()
         );
-        $this->assertNull($db->getAdminDriver());
-        $this->assertNull($db->getSchemaDriver());
+        //$this->assertNull($db->getAdminDriver());
+        //$this->assertNull($db->getSchemaDriver());
     }
 
     /**
@@ -221,9 +241,50 @@ class DBManagerTest extends TestCase
             "Schema: Unable to connect to database as administrator",
             $result->getMessage()
         );
-        $this->assertNull($db->getAdminDriver());
-        $this->assertNull($db->getSchemaDriver());
+        //$this->assertNull($db->getAdminDriver());
+        //$this->assertNull($db->getSchemaDriver());
     }
+
+
+
+    /**
+     * This function tests an error is returned if an invalid database driver is used
+     * for the datadriver function
+     *
+     * @group unittest
+     * @group SQLManager
+     *
+     * @return null
+     */
+    public function testsetModeInvalidDBDriverDataDriver()
+    {
+        global $dsn;
+
+        // Set up invalid driver
+        $localdsn = $dsn;
+        $localdsn['dbtype'] = 'invalid';
+
+        try {
+            $db = new \g7mzr\db\DBManager(
+                $localdsn,
+                $localdsn["username"],
+                $localdsn["password"],
+                true
+            );
+        } catch (Exception $ex) {
+            $this->fail($ex->getMessage());
+        }
+
+        $result = $db->setMode('datadriver');
+        $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
+        $this->assertEquals(
+            "Admin: Unable to connect to database for data access",
+            $result->getMessage()
+        );
+        //$this->assertNull($db->getAdminDriver());
+        //$this->assertNull($db->getSchemaDriver());
+    }
+
 
     /**
      * This function tests an error is returned if an $dsn is used for the admin
@@ -256,8 +317,8 @@ class DBManagerTest extends TestCase
     }
 
     /**
-     * This function tests an error is returned if an $dsn is used for the admin
-     * function
+     * This function tests an error is returned if an invalid $dsn is used for the
+     * schema function
      *
      * @group unittest
      * @group DatabaseAccess
@@ -287,5 +348,147 @@ class DBManagerTest extends TestCase
             "Admin: Unable to connect to database as administrator",
             $result->getMessage()
         );
+    }
+
+    /**
+     * This function tests an error is returned if an invalid $dsn is used for the
+     * datadriver function
+     *
+     * @group unittest
+     * @group DatabaseAccess
+     *
+     * @return null
+     */
+    public function testsetModeInvalidDSNDataDriver()
+    {
+        global $dsn;
+
+        $localdsn = $dsn;
+        $localdsn['password'] = "fakepassword";
+
+        try {
+            $dbobject = new \g7mzr\db\DBManager(
+                $localdsn,
+                $dsn["adminuser"],
+                "fakepassword",
+                true
+            );
+        } catch (Exception $ex) {
+            $this->fail($ex->getMessage());
+        }
+        $result = $dbobject->setMode('datadriver');
+        $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
+        $this->assertContains(
+            "Admin: Unable to connect to database for data access",
+            $result->getMessage()
+        );
+    }
+
+    /**
+     * This function tests an exception is thrown if the Admin function is not set
+     *
+     * @group unittest
+     * @group DatabaseAccess
+     *
+     * @return null
+     */
+    public function testInvalidAdminObject()
+    {
+        global $dsn;
+
+        $localdsn = $dsn;
+
+        try {
+            $dbobject = new \g7mzr\db\DBManager(
+                $localdsn,
+                $dsn["adminuser"],
+                $dsn['adminpasswd'],
+                true
+            );
+        } catch (\Throwable $ex) {
+            $this->fail($ex->getMessage());
+        }
+
+        try {
+            $result = $this->object->getAdminDriver()->getDBVersion();
+            $this->fail("Exception not raised for invalid Admin Driver");
+        } catch (\Throwable $ex) {
+            $this->assertContains(
+                "Admin Driver not initalised",
+                $ex->getMessage()
+            );
+        }
+    }
+
+    /**
+     * This function tests an exception is thrown if the Schema function is not set
+     *
+     * @group unittest
+     * @group DatabaseAccess
+     *
+     * @return null
+     */
+    public function testInvalidSchemaObject()
+    {
+        global $dsn;
+
+        $localdsn = $dsn;
+
+        try {
+            $dbobject = new \g7mzr\db\DBManager(
+                $localdsn,
+                $dsn["adminuser"],
+                $dsn['adminpasswd'],
+               true
+            );
+        } catch (\Throwable $ex) {
+            $this->fail($ex->getMessage());
+        }
+
+        try {
+            $result = $this->object->getSchemaDriver()->getDBVersion();
+            $this->fail("Exception not raised for invalid Schema Driver");
+        } catch (\Throwable $ex) {
+            $this->assertContains(
+                "Schema Driver not initalised",
+                $ex->getMessage()
+            );
+        }
+    }
+
+   /**
+     * This function tests an exception is thrown if the DataDriverfunction is not set
+     *
+     * @group unittest
+     * @group DatabaseAccess
+     *
+     * @return null
+     */
+    public function testInvalidDataDriverObject()
+    {
+        global $dsn;
+
+        $localdsn = $dsn;
+
+        try {
+            $dbobject = new \g7mzr\db\DBManager(
+                $localdsn,
+                $dsn["adminuser"],
+                $dsn['adminpasswd'],
+               true
+            );
+        } catch (\Throwable $ex) {
+            $this->fail($ex->getMessage());
+        }
+
+        try {
+            $result = $this->object->getDataDriver()->getDBVersion();
+            $this->fail("Exception not raised for invalid Data Driver");
+        } catch (\Throwable $ex) {
+            $this->assertContains(
+                "Data Driver not initalised",
+                $ex->getMessage()
+            );
+        }
     }
 }

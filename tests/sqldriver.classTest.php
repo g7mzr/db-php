@@ -30,7 +30,7 @@ class DriverTest extends TestCase
     /**
      * DB CLASS
      *
-     * @var \g7mzr\db\DB
+     * @var \g7mzr\db\DBManager
      */
     protected $object;
 
@@ -64,11 +64,18 @@ class DriverTest extends TestCase
     protected function setUp()
     {
         global $dsn;
-        $this->object = \g7mzr\db\DB::load($dsn, true);
-        if (\g7mzr\db\common\Common::isError($this->object)) {
-            print_r($this->object);
+        try {
+            $this->object = new \g7mzr\db\DBManager($dsn, "", "", true);
+        } catch (\throwable $e) {
+            throw new \Exception('Unable to connect to the database');
+        }
+
+        $result = $this->object->setMode("datadriver");
+        if (\g7mzr\db\common\Common::isError($result)) {
+            print_r($result);
             exit(1);
         }
+
 
         // Set expected answers for specific database types
         switch ($dsn['dbtype']) {
@@ -124,7 +131,7 @@ class DriverTest extends TestCase
 
             unset($localconn);
         }
-        $this->object->disconnect();
+        $this->object->getDataDriver()->disconnect();
     }
 
     /**
@@ -138,11 +145,17 @@ class DriverTest extends TestCase
     public function testDestruct()
     {
         global $dsn;
-        $class = \g7mzr\db\DB::load($dsn, true);
-        if (\g7mzr\db\common\Common::isError($class)) {
+        try {
+            $this->object = new \g7mzr\db\DBManager($dsn, "", "", true);
+        } catch (\throwable $e) {
+            throw new \Exception('Unable to connect to the database');
+        }
+
+        $result = $this->object->setMode("datadriver");
+        if (\g7mzr\db\common\Common::isError($result)) {
             $this->fail('Unable to create Class');
         }
-        $class = null;
+        $this->object->getDataDriver()->disconnect();
         $this->assertTrue(true);
     }
 
@@ -156,7 +169,7 @@ class DriverTest extends TestCase
      */
     public function testDBVersion()
     {
-        $result = $this->object->getDBVersion();
+        $result = $this->object->getDataDriver()->getDBVersion();
         $this->assertContains($this->drivertype, $result);
     }
 
@@ -175,13 +188,13 @@ class DriverTest extends TestCase
 
         // Search using iser_id
         $searchone = array('user_id' => '1');
-        $resultone = $this->object->dbselectsingle('users', $fields, $searchone);
+        $resultone = $this->object->getDataDriver()->dbselectsingle('users', $fields, $searchone);
         $this->assertEquals('1', $resultone['user_id']);
         $this->assertEquals('user1', $resultone['username']);
 
         // search using username
         $searchtwo = array('username' => 'user2');
-        $resulttwo = $this->object->dbselectsingle('users', $fields, $searchtwo);
+        $resulttwo = $this->object->getDataDriver()->dbselectsingle('users', $fields, $searchtwo);
         $this->assertEquals('2', $resulttwo['user_id']);
         $this->assertEquals('user2', $resulttwo['username']);
 
@@ -194,7 +207,7 @@ class DriverTest extends TestCase
             'owner'
         );
         $itemsearch = array('item_id' => 1);
-        $itemresult = $this->object->dbselectsingle(
+        $itemresult = $this->object->getDataDriver()->dbselectsingle(
             'items',
             $itemfields,
             $itemsearch
@@ -219,7 +232,7 @@ class DriverTest extends TestCase
 
         // search using username
         $search = array('username' => 'user6');
-        $result = $this->object->dbselectsingle('users', $fields, $search);
+        $result = $this->object->getDataDriver()->dbselectsingle('users', $fields, $search);
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
         $this->assertEquals('Not Found', $result->getMessage());
     }
@@ -237,14 +250,14 @@ class DriverTest extends TestCase
         // Test for an invalid field
         $fields = array('user_id', 'usermame', 'password', 'email');
         $search = array('username' => 'user1');
-        $result = $this->object->dbselectsingle('users', $fields, $search);
+        $result = $this->object->getDataDriver()->dbselectsingle('users', $fields, $search);
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
         $this->assertEquals('SQL Query Error', $result->getMessage());
 
         // Test Invalid table
         $fields = array('user_id', 'username', 'password', 'email');
         $search = array('username' => 'user1');
-        $result = $this->object->dbselectsingle('user', $fields, $search);
+        $result = $this->object->getDataDriver()->dbselectsingle('user', $fields, $search);
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
         $this->assertEquals('SQL Query Error', $result->getMessage());
     }
@@ -262,7 +275,7 @@ class DriverTest extends TestCase
         // Test for multiple records
         $fields = array('item_id', 'itemname', 'itemdescription', 'owner');
         $search = array('owner' => '2');
-        $result = $this->object->dbselectsingle('items', $fields, $search);
+        $result = $this->object->getDataDriver()->dbselectsingle('items', $fields, $search);
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
         $this->assertEquals('Found More than One Record', $result->getMessage());
     }
@@ -280,7 +293,7 @@ class DriverTest extends TestCase
         // Test for multiple records
         $fields = array('item_id', 'itemname', 'itemdescription', 'owner');
         $search = array('owner' => '2');
-        $result = $this->object->dbselectmultiple('items', $fields, $search);
+        $result = $this->object->getDataDriver()->dbselectmultiple('items', $fields, $search);
         $this->assertEquals(2, count($result));
         $this->assertEquals('item2', $result[0]['itemname']);
         $this->assertEquals('item3', $result[1]['itemname']);
@@ -301,7 +314,7 @@ class DriverTest extends TestCase
         $fields = array('item_id', 'itemname', 'itemdescription', 'owner');
         $search = array('owner' => '2');
         $orderby = 'item_id';
-        $result = $this->object->dbselectmultiple(
+        $result = $this->object->getDataDriver()->dbselectmultiple(
             'items',
             $fields,
             $search,
@@ -327,7 +340,7 @@ class DriverTest extends TestCase
         $fields = array('item_id', 'itemname', 'itemdescription', 'owner');
         $search = array('owner' => '10');
         $orderby = 'item_id';
-        $result = $this->object->dbselectmultiple(
+        $result = $this->object->getDataDriver()->dbselectmultiple(
             'items',
             $fields,
             $search,
@@ -351,7 +364,7 @@ class DriverTest extends TestCase
         $fields = array('item_id', 'itemname', 'description', 'owner');
         $search = array('owner' => '10');
         $orderby = 'item_id';
-        $result = $this->object->dbselectmultiple(
+        $result = $this->object->getDataDriver()->dbselectmultiple(
             'items',
             $fields,
             $search,
@@ -364,7 +377,7 @@ class DriverTest extends TestCase
         $fields = array('item_id', 'itemname', 'itemdescription', 'owner');
         $search = array('owner' => '10');
         $orderby = 'item_id';
-        $result = $this->object->dbselectmultiple(
+        $result = $this->object->getDataDriver()->dbselectmultiple(
             'item',
             $fields,
             $search,
@@ -388,7 +401,7 @@ class DriverTest extends TestCase
         $fields = array('user_id', 'username', 'password', 'email');
         $search = array('username' => 'user%');
          $orderby = 'user_id';
-        $result = $this->object->dbselectmultiple(
+        $result = $this->object->getDataDriver()->dbselectmultiple(
             'users',
             $fields,
             $search,
@@ -414,7 +427,7 @@ class DriverTest extends TestCase
         $fields = array('user_id', 'username', 'password', 'email');
         $search = array('username' => 'user%', 'email' => 'user1@example.com');
         $orderby = 'user_id';
-        $result = $this->object->dbselectmultiple(
+        $result = $this->object->getDataDriver()->dbselectmultiple(
             'users',
             $fields,
             $search,
@@ -452,7 +465,7 @@ class DriverTest extends TestCase
             'users.user_id',
             'field2' => 'items.owner'
         );
-        $result = $this->object->dbselectmultiple(
+        $result = $this->object->getDataDriver()->dbselectmultiple(
             'users',
             $fields,
             $search,
@@ -481,7 +494,7 @@ class DriverTest extends TestCase
             'password' => 'unittest',
             'email' => 'unittest@example.com'
         );
-        $result = $this->object->dbinsert('users', $fields);
+        $result = $this->object->getDataDriver()->dbinsert('users', $fields);
         if (\g7mzr\db\common\Common::isError($result)) {
             $this->fail($result->getMessage());
         } else {
@@ -508,7 +521,7 @@ class DriverTest extends TestCase
             'available' => true,
             'owner' => 1
         );
-        $result = $this->object->dbinsert('items', $fields);
+        $result = $this->object->getDataDriver()->dbinsert('items', $fields);
         if (\g7mzr\db\common\Common::isError($result)) {
             $this->fail($result->getMessage());
         } else {
@@ -535,7 +548,7 @@ class DriverTest extends TestCase
             'password' => 'unittest',
             'email' => 'unittest@example.com'
         );
-        $result = $this->object->dbinsert('user', $fields);
+        $result = $this->object->getDataDriver()->dbinsert('user', $fields);
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
         $this->assertEquals(
             'Error running the Database INSERT Statement',
@@ -556,7 +569,7 @@ class DriverTest extends TestCase
      */
     public function testInsertID()
     {
-        $result = $this->object->dbinsertid('users', 'user_id', 'username', 'user1');
+        $result = $this->object->getDataDriver()->dbinsertid('users', 'user_id', 'username', 'user1');
         $this->assertEquals('1', $result);
     }
 
@@ -573,7 +586,7 @@ class DriverTest extends TestCase
      */
     public function testInsertIDNotFound()
     {
-        $result = $this->object->dbinsertid(
+        $result = $this->object->getDataDriver()->dbinsertid(
             'users',
             'user_id',
             'username',
@@ -599,7 +612,7 @@ class DriverTest extends TestCase
      */
     public function testInsertIDSQLError()
     {
-        $result = $this->object->dbinsertid(
+        $result = $this->object->getDataDriver()->dbinsertid(
             'users',
             'userid',
             'username',
@@ -630,7 +643,7 @@ class DriverTest extends TestCase
             'password' => 'unittest',
             'email' => 'unittest@example.com'
         );
-        $result = $this->object->dbinsert('users', $fields);
+        $result = $this->object->getDataDriver()->dbinsert('users', $fields);
         if (\g7mzr\db\common\Common::isError($result)) {
             $this->fail($result->getMessage());
         }
@@ -641,12 +654,12 @@ class DriverTest extends TestCase
             'email' => 'test@example.com'
         );
         $searchdata = array('username' => 'unittest');
-        $result = $this->object->dbupdate('users', $updatefields, $searchdata);
+        $result = $this->object->getDataDriver()->dbupdate('users', $updatefields, $searchdata);
         if (\g7mzr\db\common\Common::isError($result)) {
             $this->fail("Error updating record");
         }
         $selectfields = array('user_id', 'username', 'password', 'email');
-        $selectresult = $this->object->dbselectsingle(
+        $selectresult = $this->object->getDataDriver()->dbselectsingle(
             'users',
             $selectfields,
             $searchdata
@@ -674,7 +687,7 @@ class DriverTest extends TestCase
             'password' => 'unittest',
             'email' => 'unittest@example.com'
         );
-        $result = $this->object->dbinsert('users', $fields);
+        $result = $this->object->getDataDriver()->dbinsert('users', $fields);
         if (\g7mzr\db\common\Common::isError($result)) {
             $this->fail($result->getMessage());
         }
@@ -684,12 +697,12 @@ class DriverTest extends TestCase
             'email' => 'test@example.com'
         );
         $searchdata = array('username' => 'unittest', 'Password' => 'unittest');
-        $result = $this->object->dbupdate('users', $updatefields, $searchdata);
+        $result = $this->object->getDataDriver()->dbupdate('users', $updatefields, $searchdata);
         if (\g7mzr\db\common\Common::isError($result)) {
             $this->fail("Error updating record");
         }
         $selectfields = array('user_id', 'username', 'password', 'email');
-        $selectresult = $this->object->dbselectsingle(
+        $selectresult = $this->object->getDataDriver()->dbselectsingle(
             'users',
             $selectfields,
             $searchdata
@@ -716,7 +729,7 @@ class DriverTest extends TestCase
             'email' => 'test@example.com'
         );
         $searchdata = array('username' => 'unittest');
-        $result = $this->object->dbupdate('users', $updatefields, $searchdata);
+        $result = $this->object->getDataDriver()->dbupdate('users', $updatefields, $searchdata);
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
         $this->assertEquals(
             'Record not found',
@@ -741,7 +754,7 @@ class DriverTest extends TestCase
             'email' => 'test@example.com'
         );
         $searchdata = array('username' => 'unittest');
-        $result = $this->object->dbupdate('users', $updatefields, $searchdata);
+        $result = $this->object->getDataDriver()->dbupdate('users', $updatefields, $searchdata);
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
         $this->assertEquals(
             'Error running the Database UPDATE Statement',
@@ -762,7 +775,7 @@ class DriverTest extends TestCase
      */
     public function testTransactionCommit()
     {
-        $transactionstart = $this->object->startTransaction();
+        $transactionstart = $this->object->getDataDriver()->startTransaction();
         $this->assertTrue($transactionstart);
 
         $insertfields = array(
@@ -770,12 +783,12 @@ class DriverTest extends TestCase
             'password' => 'unittest',
             'email' => 'unittest@example.com'
         );
-        $result = $this->object->dbinsert('users', $insertfields);
+        $result = $this->object->getDataDriver()->dbinsert('users', $insertfields);
         if (\g7mzr\db\common\Common::isError($result)) {
             $this->fail($result->getMessage());
         }
 
-        $transactionend =$this->object->endTransaction(true);
+        $transactionend =$this->object->getDataDriver()->endTransaction(true);
         $this->assertTrue($transactionend);
 
         $this->userCreated = true;
@@ -785,7 +798,7 @@ class DriverTest extends TestCase
 
         // Search using iser_id
         $searchdata = array('username' => 'unittest');
-        $searchresult = $this->object->dbselectsingle(
+        $searchresult = $this->object->getDataDriver()->dbselectsingle(
             'users',
             $searchfields,
             $searchdata
@@ -805,7 +818,7 @@ class DriverTest extends TestCase
      */
     public function testTransactionRollback()
     {
-        $transactionstart = $this->object->startTransaction();
+        $transactionstart = $this->object->getDataDriver()->startTransaction();
         $this->assertTrue($transactionstart);
 
         $insertfields = array(
@@ -813,12 +826,12 @@ class DriverTest extends TestCase
             'password' => 'unittest',
             'email' => 'unittest@example.com'
         );
-        $result = $this->object->dbinsert('users', $insertfields);
+        $result = $this->object->getDataDriver()->dbinsert('users', $insertfields);
         if (\g7mzr\db\common\Common::isError($result)) {
             $this->fail($result->getMessage());
         }
 
-        $transactionend =$this->object->endTransaction(false);
+        $transactionend =$this->object->getDataDriver()->endTransaction(false);
         $this->assertTrue($transactionend);
 
         // Data fields to be returned
@@ -826,7 +839,7 @@ class DriverTest extends TestCase
 
         // Search using iser_id
         $searchdata = array('username' => 'unittest');
-        $searchresult = $this->object->dbselectsingle(
+        $searchresult = $this->object->getDataDriver()->dbselectsingle(
             'users',
             $searchfields,
             $searchdata
@@ -856,7 +869,7 @@ class DriverTest extends TestCase
             'password' => 'unittest',
             'email' => 'unittest@example.com'
         );
-        $result = $this->object->dbinsert('users', $insertfields);
+        $result = $this->object->getDataDriver()->dbinsert('users', $insertfields);
         if (\g7mzr\db\common\Common::isError($result)) {
             $this->fail($result->getMessage());
         }
@@ -865,7 +878,7 @@ class DriverTest extends TestCase
 
         // Delete using username
         $deletedata = array('username' => 'unittest');
-        $deleteresult = $this->object->dbdelete('users', $deletedata);
+        $deleteresult = $this->object->getDataDriver()->dbdelete('users', $deletedata);
         if (\g7mzr\db\common\Common::isError($deleteresult)) {
             $this->fail($deleteresult->getMessage());
         }
@@ -876,7 +889,7 @@ class DriverTest extends TestCase
 
         // Search using iser_id
         $searchdata = array('username' => 'unittest');
-        $searchresult = $this->object->dbselectsingle(
+        $searchresult = $this->object->getDataDriver()->dbselectsingle(
             'users',
             $searchfields,
             $searchdata
@@ -905,7 +918,7 @@ class DriverTest extends TestCase
             'password' => 'unittest',
             'email' => 'unittest@example.com'
         );
-        $result = $this->object->dbinsert('users', $insertfields);
+        $result = $this->object->getDataDriver()->dbinsert('users', $insertfields);
         if (\g7mzr\db\common\Common::isError($result)) {
             $this->fail($result->getMessage());
         }
@@ -914,7 +927,7 @@ class DriverTest extends TestCase
 
         // Search using multiple fields
         $deletedata = array('username' => 'unittest', 'password' => 'unittest');
-        $deleteresult = $this->object->dbdelete('users', $deletedata);
+        $deleteresult = $this->object->getDataDriver()->dbdelete('users', $deletedata);
         if (\g7mzr\db\common\Common::isError($deleteresult)) {
             $this->fail($deleteresult->getMessage());
         }
@@ -924,7 +937,7 @@ class DriverTest extends TestCase
 
         // Search using iser_id
         $searchdata = array('username' => 'unittest');
-        $searchresult = $this->object->dbselectsingle(
+        $searchresult = $this->object->getDataDriver()->dbselectsingle(
             'users',
             $searchfields,
             $searchdata
@@ -950,7 +963,7 @@ class DriverTest extends TestCase
 
         // Search using iser_id
         $deletedata = array('name' => 'unittest');
-        $deleteresult = $this->object->dbdelete('users', $deletedata);
+        $deleteresult = $this->object->getDataDriver()->dbdelete('users', $deletedata);
 
         $this->assertTrue(is_a($deleteresult, '\g7mzr\db\common\Error'));
         $this->assertEquals(
@@ -976,7 +989,7 @@ class DriverTest extends TestCase
             'password' => 'unittest',
             'email' => 'unittest@example.com'
         );
-        $result = $this->object->dbinsert('users', $insertfields);
+        $result = $this->object->getDataDriver()->dbinsert('users', $insertfields);
         if (\g7mzr\db\common\Common::isError($result)) {
             $this->fail($result->getMessage());
         }
@@ -986,7 +999,7 @@ class DriverTest extends TestCase
         // Delete using username
         $deletedata = array();
         $deletedata['username'] = array('type' => "=", 'data' => 'unittest');
-        $deleteresult = $this->object->dbdeletemultiple('users', $deletedata);
+        $deleteresult = $this->object->getDataDriver()->dbdeletemultiple('users', $deletedata);
         if (\g7mzr\db\common\Common::isError($deleteresult)) {
             $this->fail($deleteresult->getMessage());
         }
@@ -997,7 +1010,7 @@ class DriverTest extends TestCase
 
         // Search using iser_id
         $searchdata = array('username' => 'unittest');
-        $searchresult = $this->object->dbselectsingle(
+        $searchresult = $this->object->getDataDriver()->dbselectsingle(
             'users',
             $searchfields,
             $searchdata
@@ -1026,7 +1039,7 @@ class DriverTest extends TestCase
             'password' => 'unittest',
             'email' => 'unittest@example.com'
         );
-        $result = $this->object->dbinsert('users', $insertfields);
+        $result = $this->object->getDataDriver()->dbinsert('users', $insertfields);
         if (\g7mzr\db\common\Common::isError($result)) {
             $this->fail($result->getMessage());
         }
@@ -1037,7 +1050,7 @@ class DriverTest extends TestCase
         $deletedata = array();
         $deletedata['username'] = array('type' => "=", 'data' => 'unittest');
         $deletedata['password'] = array('type' => "=", 'data' => 'unittest');
-        $deleteresult = $this->object->dbdeletemultiple('users', $deletedata);
+        $deleteresult = $this->object->getDataDriver()->dbdeletemultiple('users', $deletedata);
         if (\g7mzr\db\common\Common::isError($deleteresult)) {
             $this->fail($deleteresult->getMessage());
         }
@@ -1048,7 +1061,7 @@ class DriverTest extends TestCase
 
         // Search using iser_id
         $searchdata = array('username' => 'unittest');
-        $searchresult = $this->object->dbselectsingle(
+        $searchresult = $this->object->getDataDriver()->dbselectsingle(
             'users',
             $searchfields,
             $searchdata
@@ -1076,7 +1089,7 @@ class DriverTest extends TestCase
         // Delete using username
         $deletedata = array();
         $deletedata['name'] = array('type' => "=", 'data' => 'unittest');
-        $deleteresult = $this->object->dbdeletemultiple('users', $deletedata);
+        $deleteresult = $this->object->getDataDriver()->dbdeletemultiple('users', $deletedata);
 
         $this->assertTrue(is_a($deleteresult, '\g7mzr\db\common\Error'));
         $this->assertEquals(
@@ -1100,12 +1113,12 @@ class DriverTest extends TestCase
 
         // Search using iser_id
         $searchdata = array('user_id' => '1');
-        $searchresult = $this->object->dbselectsingle('users', $fields, $searchdata);
+        $searchresult = $this->object->getDataDriver()->dbselectsingle('users', $fields, $searchdata);
         if (\g7mzr\db\common\Common::isError($searchresult)) {
             $this->fail($searchresult->getMessage());
         }
 
-        $rowcount = $this->object->rowCount();
+        $rowcount = $this->object->getDataDriver()->rowCount();
         $this->assertEquals('1', $rowcount);
     }
 }
