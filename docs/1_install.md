@@ -6,7 +6,7 @@ DB is installed using composer.
 
 To load the latest release add the following to your compose.json file
 
-'''
+```
     {
         "require": {
             "g7mzr/db": "*"
@@ -18,9 +18,9 @@ To load the latest release add the following to your compose.json file
             }
         ]
     }
-'''
+```
 To load the development version add the following to your compose.json file
-'''
+```
     {
         "require": {
             "g7mzr/db": "dev-master"
@@ -32,4 +32,4 @@ To load the development version add the following to your compose.json file
             }
         ]
     }
-'''
+```
