@@ -1,5 +1,14 @@
-# About
+---
+layout: default
+title: About
+permalink: /
+---
+# {{ page.title }}
 
-This site will hold the documentation for DB which is currently under debelopment.
+DB-PHP is a composer module for php 7.2 and above for accessing Psotgresql Databases
+using php.  It started out as part of the "webtemplate" application but developed into
+a stand alone module.
 
+## Overview
 
+This documentation is currently under development.
