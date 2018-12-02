@@ -3,14 +3,18 @@ layout: page
 title: Configure
 ---
 ## Introduction
-DB-PHP can use a mixture of `php` and `json` files.  The PHP Data Source Name (DSN)
-is a `php` array and can be stored as a `php` file or `json` file as long as it is
-converted to an array before it is passed to db-php.  The database schema must be
-held in `json` files.  Examples of both types of files are included in the package and
+**db-php** can use a mixture of *php* and *json* files.  The PHP Data Source Name (DSN)
+is a *php* array and can be stored as a *php* file or *json* file as long as it is
+converted to an array before it is passed to **db-php**.  The database schema must be
+held in *json* files.  Examples of both types of files are included in the package and
 shown below.
 
-## PHP Data Source Name
+## PHP Data Source Name (DSN)
 
+A *php* DSN is shown below.  It uses a *php* array to hold the database connection
+information. The "adminuser" and "adminpasswd" items are used when the database is initially
+created or updated. They can be the same as "username" and "password" if you have manually
+created the user and given them database creation rights.
 ```php
 <?php
 /**
@@ -21,7 +25,7 @@ shown below.
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-$dsn["dbtype"] = "";
+$dsn["dbtype"] = "pgsql";
 $dsn["hostspec"]  = "";
 $dsn["databasename"] = "";
 $dsn["username"] = "";
@@ -33,6 +37,9 @@ $dsn['adminpasswd'] = "";  // Only used to create a database user and blank data
 
 ## Schema File
 
+The example below shows a database schema containing two tables, one called "users2 with
+five columns including a primary key and index and one called "items" with 5 columns
+including a primary key, foreign key and index.
 ```json
 {
     "version": "1",

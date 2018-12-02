@@ -380,7 +380,7 @@ class SchemaManager
             $schemachanged = false;
         }
 
-        // Check the actial Schemas
+        // Check the actual Schemas
         $newSchemaString = serialize($this->newSchema);
         $currentSchemaString = serialize($this->currentSchema);
         if (strcmp($newSchemaString, $currentSchemaString) == 0) {

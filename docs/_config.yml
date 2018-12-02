@@ -4,7 +4,7 @@
 permalink:           pretty
 
 # Setup
-title:               DB-PHP
+title:               db-php
 tagline:             'A PHP Database Composer Access Module'
 description:         'A PHP Database Composer Access Module.'
 url:                 https://g7mzr.github.io/
@@ -20,6 +20,5 @@ author:
 
 # Custom vars
 version:             0.5.0
-
-repository:          g7mzr/db-php
+repository:         g7mzr/db-php
 
