@@ -1,6 +1,17 @@
 {
     "version": "1",
+    "name" : "main",
     "tables": {
+        "schema": {
+            "columns": {
+                "name": {"type": "varchar(50)", "unique": true, "notnull": true},
+                "version": {"type": "integer", "notnull": true},
+                "schema" : {"type": "text", "notnull": true}
+            },
+            "index": {
+                "schema_name_idx": {"column": "name"}
+            }
+        },
         "users": {
             "columns": {
                 "user_id": {"type": "serial", "primary": true},

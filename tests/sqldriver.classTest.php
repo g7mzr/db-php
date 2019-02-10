@@ -260,6 +260,8 @@ class DriverTest extends TestCase
         $result = $this->object->getDataDriver()->dbselectsingle('user', $fields, $search);
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
         $this->assertEquals('SQL Query Error', $result->getMessage());
+        $dberror = $result->getDBMessage();
+        $this->assertContains('column "user_id" does not exist', $dberror[2]);
     }
 
     /**

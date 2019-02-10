@@ -134,6 +134,7 @@ class DBConfigpgsql
 
         // Create the Schema Table
         $sql = "CREATE TABLE schema(";
+        $sql .= "name VARCHAR(50) UNIQUE NOT NULL,";
         $sql .= "version integer NOT NULL,";
         $sql .= "schema text NOT NULL";
         $sql .= ")";
@@ -146,12 +147,13 @@ class DBConfigpgsql
 
         // Create an Empty Schema Table for testing
         $sql = "CREATE TABLE emptyschema(";
+        $sql .= "name VARCHAR(50) UNIQUE NOT NULL,";
         $sql .= "version integer NOT NULL,";
         $sql .= "schema text NOT NULL";
         $sql .= ")";
         $tableemptyschemaresult = $localconn->query($sql);
         if ($tableemptyschemaresult === false) {
-            echo "Error creating Schema Table\n";
+            echo "Error creating empty Schema Table\n";
             return false;
         }
 

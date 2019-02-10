@@ -417,6 +417,7 @@ class DBManagerTest extends TestCase
                 "Admin Driver not initalised",
                 $ex->getMessage()
             );
+            $this->assertEquals("", $ex->getDBMessage());
         }
     }
 
@@ -439,7 +440,7 @@ class DBManagerTest extends TestCase
                 $localdsn,
                 $dsn["adminuser"],
                 $dsn['adminpasswd'],
-               true
+                true
             );
         } catch (\Throwable $ex) {
             $this->fail($ex->getMessage());
@@ -475,7 +476,7 @@ class DBManagerTest extends TestCase
                 $localdsn,
                 $dsn["adminuser"],
                 $dsn['adminpasswd'],
-               true
+                true
             );
         } catch (\Throwable $ex) {
             $this->fail($ex->getMessage());

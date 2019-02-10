@@ -438,7 +438,11 @@ class DatabaseDriver implements InterfaceDatabaseDriver
             }
         } else {
             $msg = gettext('SQL Query Error');
-            $err = \g7mzr\db\common\Common::raiseError($msg, DB_ERROR);
+            $err = \g7mzr\db\common\Common::raiseError(
+                $msg,
+                DB_ERROR,
+                $this->stmt->errorInfo()
+            );
             return $err;
         }
         return $gao;

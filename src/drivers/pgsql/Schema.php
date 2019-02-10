@@ -199,6 +199,66 @@ class Schema implements InterfaceDatabaseSchema
     }
 
     /**
+     * Function to test if schema table exists
+     *
+     * Function to check if the table that holds the schema data exists in the
+     * database.
+     *
+     * @param string $tablename The name of the schema table
+     *
+     * @return mixed Boolean True/false or \g7mzr\db\common\Error
+     *
+     * @access public
+     */
+    public function schemaTableExists($tablename = "schema")
+    {
+        $tablefound  = false;
+
+        // Check that a table called $tablename exists in the datbase;
+        $this->sql = "SELECT table_name FROM information_schema.tables ";
+        $this->sql .= "WHERE table_schema='public' AND table_name = '$tablename'";
+        $result = $this->sqlQuery($this->sql);
+        if (\g7mzr\db\common\Common::isError($result)) {
+            if ($result->getCode() != DB_ERROR_NOT_FOUND) {
+                return $result;
+            }
+        } else {
+            foreach ($result as $name) {
+                if ($name['table_name'] == $tablename) {
+                    $tablefound = true;
+                }
+            }
+        }
+        return $tablefound;
+    }
+
+    /**
+     * Function to test if database is empty
+     *
+     * This function tests to see if there are any tables in the database
+     *
+     * @return  mixed Boolean True/false or \g7mzr\db\common\Error
+     *
+     * @access public
+     */
+    public function blankdatabase()
+    {
+        $notables = false;
+        // Check that a table called $tablename exists in the datbase;
+        $this->sql = "SELECT table_name FROM information_schema.tables ";
+        $this->sql .= "WHERE table_schema='public'";
+        $result = $this->sqlQuery($this->sql);
+        if (\g7mzr\db\common\Common::isError($result)) {
+            if ($result->getCode() != DB_ERROR_NOT_FOUND) {
+                return $result;
+            } else {
+                $notables = true;
+            }
+        } 
+        return $notables;
+    }
+
+    /**
      **************************************************************************
      *****  THIS SECTION OF THE FILE CONTAINS DATABASE CREATION FUNCTIONS *****
      **************************************************************************
@@ -538,29 +598,30 @@ class Schema implements InterfaceDatabaseSchema
      *
      * @param integer $version The Version of the schema being saved
      * @param array   $schema  The array containing the schema
+     * @param string  $name  The name of the schema entry being retrieved
      * @param string  $table   The name of the Schema Table in the database
      *
      * @return mixed true if schema saved or DB error
      *
      * @access public
      */
-    public function saveSchema($version, $schema, $table = "schema")
+    public function saveSchema($version, $schema, $name = 'main', $table = "schema")
     {
         $schemaSaved = false;
 
-        $this->sql = "DELETE FROM $table";
+        $this->sql = "DELETE FROM $table where name = '$name'";
         $this->stmt = $this->pdo->prepare($this->sql);
         $resultId = $this->stmt->execute();
         if ($resultId !== false) {
             $serial_schema = serialize($schema);
             $this->sql = "INSERT INTO $table ";
-            $this->sql .= "(version, schema) values (?,?)";
+            $this->sql .= "(name, version, schema) values (?,?,?)";
             $this->stmt = $this->pdo->prepare(
                 $this->sql,
-                array('decimal', 'text')
+                array('text', 'decimal', 'text')
             );
             if (!\g7mzr\db\common\Common::isError($this->stmt)) {
-                $data = array($version, $serial_schema);
+                $data = array($name, $version, $serial_schema);
                 $result = $this->stmt->execute($data);
                 if ($result !== false) {
                     $schemaSaved = true;
@@ -585,25 +646,28 @@ class Schema implements InterfaceDatabaseSchema
     /**
      * Function to retrieve the current schema from the database.
      *
+     * @param string $name  The name of the schema entry being retrieved
      * @param string $table The table the schema is stored in.  Default is schema
      *
      * @return mixed array containing schema version and data or DB error
      *
      * @access public
      */
-    public function getSchema($table = 'schema')
+    public function getSchema($name = "main", $table = 'schema')
     {
 
         // Set Local Variables
         $resultArray = array();
         // Set the SQL to get the Schema
-        $this->sql = "SELECT version, schema from " . $table;
+        $this->sql = "SELECT name, version, schema from " . $table;
+        $this->sql .= " where name = '" . $name ."'";
         $this->stmt = $this->pdo->prepare($this->sql);
         $resultId = $this->stmt->execute();
         if ($resultId !== false) {
             if ($this->stmt->rowCount() > 0) {
                 // Found a Schema Entry.  Get the data.
                 $uao = $this->stmt->fetch(\PDO::FETCH_ASSOC, 0);
+                $resultArray['name'] = chop($uao['name']);
                 $resultArray['version'] = $uao['version'];
                 $resultArray['schema'] = unserialize($uao['schema']);
             } else {

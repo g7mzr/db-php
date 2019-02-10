@@ -34,6 +34,13 @@ class SchemaManager
     protected $newSchemaversion = 0;
 
     /**
+     * property: newSchemaName
+     * @var String
+     * @access protected
+     */
+    protected $newSchemaname = '';
+
+    /**
      * property: currentSchema
      * @var array
      * @access protected
@@ -47,6 +54,13 @@ class SchemaManager
      */
     protected $currentSchemaversion = 0;
 
+    /**
+     * property: currentSchemaName
+     * @var String
+     * @access protected
+     */
+
+    protected $currentSchemaname = 'main';
     /**
      * Property dbManager
      * @var \g7mzr\db\DBManager
@@ -93,6 +107,58 @@ class SchemaManager
      ******************************************************************************/
 
     /******************************************************************************
+     *                 Function to Automatically Install or Update Schema
+     ******************************************************************************/
+
+
+    /**
+     * Automatic Schema Change
+     *
+     * This function automatically installs or updates a Schema using the main class
+     * functions.  It has been added to simplify schema management
+     *
+     * @param string  $filename   The fully qualified filename for the schema file
+     * @param boolean $newinstall If true this is new install
+     * @param string  $tablename  The name of the Schema Table
+     *
+     * @return mixed True if the schema has been loaded okay.  DB Error otherwise
+     *
+     * @access public
+     */
+    public function autoSchemaManagement($filename, $newinstall = false, $tablename = "schema")
+    {
+        $newSchemaLoaded = $this->loadNewSchema($filename);
+        if (\g7mzr\db\common\Common::isError($newSchemaLoaded)) {
+            return $newSchemaLoaded;
+        }
+
+        if ($newinstall === true) {
+            $installResult = $this->processNewSchema();
+        } else {
+            $currentSchemaLoaded = $this->getSchema($tablename);
+            if (\g7mzr\db\common\Common::isError($currentSchemaLoaded)) {
+                return $currentSchemaLoaded;
+            }
+
+            if ($this->schemaChanged() === true) {
+                $installResult = $this->processSchemaUpdate();
+            } else {
+                $installResult = true;
+            }
+        }
+
+        if (\g7mzr\db\common\Common::isError($installResult)) {
+            return $installResult;
+        }
+
+        $saveResult = $this->saveSchema($tablename);
+        if (\g7mzr\db\common\Common::isError($saveResult)) {
+            return $saveResult;
+        }
+
+        return true;
+    }
+    /******************************************************************************
      *                           FUNCTIONS FOR DEALING WITH NEW SCHEMA
      ******************************************************************************/
     /**
@@ -133,6 +199,10 @@ class SchemaManager
         }
         $this->newSchema = $dataarray["tables"];
         $this->newSchemaversion = $dataarray["version"];
+        $this->newSchemaname = $dataarray['name'];
+
+        // Save the current Schema Name.  Needed to get the schema from the database
+        $this->currentSchemaname = $dataarray['name'];
 
         if ($fileloaded === true) {
             return true;
@@ -201,6 +271,19 @@ class SchemaManager
         return $this->newSchema;
     }
 
+    /**
+     * Function to return the new Schema name
+     *
+     * This function returns the new schema name as a string
+     *
+     * @return string New Schema Name
+     *
+     * @access public
+     */
+    public function getNewSchemaName()
+    {
+        return $this->newSchemaname;
+    }
 
     /******************************************************************************
      *                  FUNCTIONS FOR DEALING WITH A SCHEMA UPDATE
@@ -288,6 +371,8 @@ class SchemaManager
      *
      * @param string $tablename The name of the Schema Table
      *
+     * @param string  $table   The name of the Schema Table in the database
+     *
      * @return True if schema processed okay.  DB Error other wise
      *
      * @access public
@@ -297,6 +382,7 @@ class SchemaManager
         $result = $this->dbManager->getSchemaDriver()->saveSchema(
             $this->newSchemaversion,
             $this->newSchema,
+            $this->newSchemaname,
             $tablename
         );
         if (\g7mzr\db\common\Common::isError($result)) {
@@ -310,7 +396,7 @@ class SchemaManager
     /**
      * Function to get the New SCHEMA from the database
      *
-     * @param string $tablename The name of the Schema Table
+     * @param string $tablename  The name of the Schema Table
      *
      * @return True if schema processed okay.  DB Error other wise
      *
@@ -318,14 +404,17 @@ class SchemaManager
      */
     public function getSchema($tablename = "schema")
     {
-        $result = $this->dbManager->getSchemaDriver()->getSchema($tablename);
+        $result = $this->dbManager->getSchemaDriver()->getSchema(
+            $this->currentSchemaname,
+            $tablename
+        );
         if (\g7mzr\db\common\Common::isError($result)) {
-            $errorMsg = $result->getMessage();
-            $err = \g7mzr\db\common\Common::raiseError($errorMsg);
-            return $err;
+            return $result;
         }
         $this->currentSchemaversion = $result['version'];
         $this->currentSchema = $result['schema'];
+        $this->currentSchemaname = $result['name'];
+
         return true;
     }
 
@@ -359,6 +448,19 @@ class SchemaManager
     {
         return $this->currentSchema;
     }
+    /**
+     * Function to return the current Schema name
+     *
+     * This function returns the current schema name as a string
+     *
+     * @return string Current Schema Name
+     *
+     * @access public
+     */
+    public function getCurrentSchemaName()
+    {
+        return $this->currentSchemaname;
+    }
 
     /******************************************************************************
      *                          COMMON SCHEMA FUNCTIONS
@@ -373,18 +475,22 @@ class SchemaManager
      */
     public function schemaChanged()
     {
-        $schemachanged = true;
+        $schemachanged = false;
+
+        if ($this->currentSchemaname != $this->newSchemaname) {
+            throw \g7mzr\db\common\DBException("Schema Names do not match", 1);
+        }
 
         // Check the Version Numbers
-        if ($this->currentSchemaversion == $this->newSchemaversion) {
-            $schemachanged = false;
+        if ($this->currentSchemaversion != $this->newSchemaversion) {
+            $schemachanged = true;
         }
 
         // Check the actual Schemas
         $newSchemaString = serialize($this->newSchema);
         $currentSchemaString = serialize($this->currentSchema);
-        if (strcmp($newSchemaString, $currentSchemaString) == 0) {
-            $schemachanged = false;
+        if (strcmp($newSchemaString, $currentSchemaString) != 0) {
+            $schemachanged = true;
         }
         return $schemachanged;
     }

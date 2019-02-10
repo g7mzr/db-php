@@ -128,7 +128,7 @@ class SchemaTest extends TestCase
     /**
      * This function prepares the test schema for a number of the tests
      *
-     * @param string $scheme The test Schema
+     * @param string $schema The test Schema
      *
      * @return boolean True if the schema is loaded okay DB Error otherwise
      */
@@ -169,6 +169,24 @@ class SchemaTest extends TestCase
             $err = \g7mzr\db\common\Common::raiseError($errorMsg);
             return $err;
         }
+    }
+
+
+    /**
+     * This function deletes the schema table contents for certain tests
+     *
+     * @return boolean True if the schema is loaded okay DB Error otherwise
+     *
+     * @access private
+     */
+    private function clearSchema()
+    {
+        $sql = "DELETE FROM Schema";
+        $result = $this->dbmanager->getSchemaDriver()->sqlQuery($sql);
+        if (\g7mzr\db\common\Common::isError($result)) {
+            return $result;
+        }
+        return true;
     }
 
     /**
@@ -514,6 +532,11 @@ class SchemaTest extends TestCase
         $this->assertEquals(
             serialize($this->schemamanager->getCurrentSchema()),
             serialize($this->schemamanager->getNewSchema())
+        );
+
+        $this->assertEquals(
+            $this->schemamanager->getCurrentSchemaName(),
+            $this->schemamanager->getNewSchemaName()
         );
     }
 
@@ -1408,6 +1431,139 @@ class SchemaTest extends TestCase
         $this->assertContains(
             "Error Creating Foreign Keys",
             $testResult->getMessage()
+        );
+    }
+
+
+    /******************************************************************************
+     * The Next set of tests check the automatic schema update function
+     *****************************************************************************/
+
+    /*
+     * This function tests to check an error is returned if the schema filename is
+     * invalid
+     *
+     * @group unittest
+     * @group DstabaseAccess
+     *
+     * @returns null
+     */
+    public function testautoSchemaManagementInvalidFileName()
+    {
+        $filename = __DIR__ . "/missingfile.json";
+        $loadresult = $this->schemamanager->autoSchemaManagement($filename);
+        $this->assertTrue(is_a($loadresult, "\g7mzr\db\common\Error"));
+        $this->assertContains(
+            "Unable to load database schema file",
+            $loadresult->getMessage()
+        );
+    }
+
+    /*
+     * This function tests to check an error is returned if the schema table is
+     * invalid
+     *
+     * @group unittest
+     * @group DstabaseAccess
+     *
+     * @returns null
+     */
+    public function testautoSchemaManagementInvalidTableName()
+    {
+        $filename = __DIR__ . "/testdata/schema.json";
+        $loadresult = $this->schemamanager->autoSchemaManagement($filename, false, 'Dummy');
+        $this->assertTrue(is_a($loadresult, "\g7mzr\db\common\Error"));
+        $this->assertContains(
+            "SQL Query Error",
+            $loadresult->getMessage()
+        );
+    }
+
+    /*
+     * This function tests to check an error is returned if the schema includes a
+     * duplicate  table
+     *
+     * @group unittest
+     * @group DstabaseAccess
+     *
+     * @returns null
+     */
+    public function testautoSchemaManagementDuplicateTableName()
+    {
+        $filename = __DIR__ . "/testdata/duplicatetableschema.json";
+        $loadresult = $this->schemamanager->autoSchemaManagement($filename);
+        $this->assertTrue(is_a($loadresult, "\g7mzr\db\common\Error"));
+        $this->assertContains(
+            "Error Creating the Table",
+            $loadresult->getMessage()
+        );
+    }
+
+    /*
+     * This function tests that a new schema can be created
+     *
+     * @group unittest
+     * @group DstabaseAccess
+     *
+     * @returns null
+     */
+    public function testautoSchemaManagementNewSchema()
+    {
+        $prepareResult = $this->clearSchema();
+        if (\g7mzr\db\common\Common::isError($prepareResult)) {
+            $this->Fail("Failed to delete schema table entries.");
+        }
+
+        $filename = __DIR__ . "/testdata/schema.json";
+        $schemaresult = $this->schemamanager->autoSchemaManagement($filename, true);
+        if (\g7mzr\db\common\Common::isError($schemaresult)) {
+            $this->fail($schemaresult->getMessage());
+        }
+        $this->assertTrue($schemaresult);
+    }
+
+
+    /*
+     * This function tests that No schema change can be dealt with
+     *
+     * @group unittest
+     * @group DstabaseAccess
+     *
+     * @returns null
+     */
+    public function testautoSchemaManagementNoChange()
+    {
+        $prepareResult = $this->prepareTestSchema();
+        if (\g7mzr\db\common\Common::isError($prepareResult)) {
+            $this->Fail($prepareResult->getMessage());
+        }
+
+        $filename = __DIR__ . "/testdata/schema.json";
+        $schemaresult = $this->schemamanager->autoSchemaManagement($filename);
+        if (\g7mzr\db\common\Common::isError($schemaresult)) {
+            $this->fail($schemaresult->getMessage());
+        }
+        $this->assertTrue($schemaresult);
+    }
+
+
+    /*
+     * This function tests to check an error is returned if the schema table is
+     * invalid when a new schema is created.
+     *
+     * @group unittest
+     * @group DstabaseAccess
+     *
+     * @returns null
+     */
+    public function testautoSchemaManagementInvalidSchemaTable()
+    {
+        $filename = __DIR__ . "/testdata/schema.json";
+        $loadresult = $this->schemamanager->autoSchemaManagement($filename, true, 'Dummy');
+        $this->assertTrue(is_a($loadresult, "\g7mzr\db\common\Error"));
+        $this->assertContains(
+            "Error Deleteting Previous Schema",
+            $loadresult->getMessage()
         );
     }
 }

@@ -37,13 +37,24 @@ $dsn['adminpasswd'] = "";  // Only used to create a database user and blank data
 
 ## Schema File
 
-The example below shows a database schema containing two tables, one called "users2 with
-five columns including a primary key and index and one called "items" with 5 columns
-including a primary key, foreign key and index.
+The example below shows a database schema containing three tables, one called "schema"
+which holds the current schema definition, one called "users" with five columns including
+a primary key and index and one called "items" with 5 columns including a primary key,
+foreign key and index.  The schema table is mandatory if you want to use **db-php**.
 ```json
 {
     "version": "1",
+    "name" : "main",
     "tables": {
+        "schema": {
+            "columns": {
+                "name": {"type": "varchar(50)", "unique": true, "notnull": true},
+                "version": {"type": "integer", "notnull": true},
+                "schema" : {"type": "text", "notnull": true}
+            },
+            "index": {
+                "schema_name_idx": {"column": "name"}
+        },
         "users": {
             "columns": {
                 "user_id": {"type": "serial", "primary": true},

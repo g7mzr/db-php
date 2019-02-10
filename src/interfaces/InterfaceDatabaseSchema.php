@@ -69,6 +69,31 @@ interface InterfaceDatabaseSchema
      */
     public function translateColumn($columntype);
 
+    /**
+     * Function to test if schema table exists
+     *
+     * Function to check if the table that holds the schema data exists in the
+     * database.
+     *
+     * @param string $tablename The name of the schema table
+     *
+     * @return mixed Boolean True/false or \g7mzr\db\common\Error
+     *
+     * @access public
+     */
+    public function schemaTableExists($tablename = "schema");
+
+   /**
+     * Function to test if database is empty
+     *
+     * This function tests to see if there are any tables in the database
+     *
+     * @return  mixed Boolean True/false or \g7mzr\db\common\Error
+     *
+     * @access public
+     */
+    public function blankdatabase();
+
     /**************************************************************************
      *    FUNCTIONS FOR CREATING AND DROPPING TABLES
      **************************************************************************/
