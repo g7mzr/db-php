@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <phpdox xmlns="http://xml.phpdox.net/config" silent="false">
- <project name="G7MZR Database" source="../src" workdir="${basedir}/phpdox">
+ <project name="PHP_Database_Client" source="../src" workdir="${basedir}/phpdox">
    <collector publiconly="false">
       <include mask="*.php" />
    </collector>

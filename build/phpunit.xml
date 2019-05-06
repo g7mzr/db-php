@@ -43,7 +43,7 @@
         <var name="unittest" value="true" />
     </php>
     <logging>
-      <log type="coverage-html" target="coverage" title="Webtemplate"
+      <log type="coverage-html" target="coverage" title="PHP_Database_Client"
             charset="UTF-8" yui="true" highlight="true"/>
       <log type="coverage-clover" target="logs/clover.xml"/>
       <log type="coverage-crap4j" target="logs/crap4j.xml"/>
