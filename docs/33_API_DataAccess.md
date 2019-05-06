@@ -76,7 +76,7 @@ public function dbinsert($tableName, $insertData);
  * @param string $srchfield The name of the field where the sreach data is saved
  * @param string $srchdata  The unique name entered in to the field
  *
- * @return integer The id of the last record inserted or WEBTEMPLATE error type
+ * @return integer The id of the last record inserted or DB error type
  * @access public
  */
 public function dbinsertid($tableName, $idfield, $srchfield, $srchdata);
@@ -98,7 +98,7 @@ public function dbinsertid($tableName, $idfield, $srchfield, $srchdata);
  * @param array  $insertData The name of the fields and data to be inserted
  * @param array  $searchdata The field and data to be used in the "WHERE" clause
  *
- * @return boolean True if insert is ok or WEBTEMPLATE error type
+ * @return boolean True if insert is ok or DB error type
  *
  * @access public
  */
@@ -120,7 +120,7 @@ public function dbupdate($tableName, $insertData, $searchdata);
  * @param array  $fieldNames The name of the fields to select from the database
  * @param array  $searchdata The field and data to be used in the "WHERE" clause
  *
- * @return array Search data if search is ok or WEBTEMPLATE error type
+ * @return array Search data if search is ok or DB error type
  * @access public
  */
 public function dbselectsingle($tableName, $fieldNames, $searchdata);
@@ -143,7 +143,7 @@ public function dbselectsingle($tableName, $fieldNames, $searchdata);
  * @param string $order      Field used to order the selected data
  * @param array  $join       Data used to join tables for the search
  *
- * @return array Search data if search is ok or WEBTEMPLATE error type
+ * @return array Search data if search is ok or DB error type
  * @access public
  */
 public function dbselectmultiple(
@@ -167,7 +167,7 @@ public function dbselectmultiple(
  * @param string $tableName  The name of the table data is to be deleted from
  * @param array  $searchdata The field and data to be used in the "WHERE" clause
  *
- * @return boolean true if search is ok or WEBTEMPLATE error type
+ * @return boolean true if search is ok or DB error type
  * @access public
  */
 public function dbdelete($tableName, $searchdata);
@@ -184,7 +184,7 @@ public function dbdelete($tableName, $searchdata);
  * @param string $tableName  The name of the table data is to be deleted from
  * @param array  $searchdata The field and data to be used in the "WHERE" clause
  *
- * @return boolean true if search is ok or WEBTEMPLATE error type
+ * @return boolean true if search is ok or DB error type
  * @access public
  */
 public function dbdeletemultiple($tableName, $searchdata);

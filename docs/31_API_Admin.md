@@ -21,9 +21,9 @@ public function getDBVersion();
 /**
  * Function to check if a Database User Exist
  *
- * @param string $username The name of the database user
+ * @param string $username The name of the database user.
  *
- * @return boolean true if user exists, False if, or DB Error
+ * @return boolean true if user exists, False if, or DB Error.
  *
  * @access public
  */
@@ -35,11 +35,11 @@ public function userExists($username);
 /**
  * Function to create the database user for the application
  *
- * @param string $username   The name of the database user
- * @param string $password   The password for the database user
- * @param string $unittestdb True if this is a test system
+ * @param string  $username   The name of the database user.
+ * @param string  $password   The password for the database user.
+ * @param boolean $unittestdb True if this is a test system.
  *
- * @return boolean true if user Created or exists WEBTEMPLATE Error otherwise
+ * @return boolean true if user Created or exists. DB Error otherwise
  *
  * @access public
  */
@@ -51,9 +51,9 @@ public function createUser($username, $password, $unittestdb = false);
 /**
  * Function to drop the database user for the application
  *
- * @param string $username The name of the database user
+ * @param string $username The name of the database user.
  *
- * @return boolean true if user dropped WEBTEMPLATE Error otherwise
+ * @return boolean true if user dropped. DB Error otherwise
  *
  * @access public
  */
@@ -65,9 +65,9 @@ public function dropUser($username);
 /**
  * Function to drop the database for the application
  *
- * @param string $database The name of the database
+ * @param string $database The name of the database.
  *
- * @return boolean true if database exists WEBTEMPLATE Error otherwise
+ * @return boolean true if database exists. DB Error otherwise
  *
  * @access public
  */
@@ -79,10 +79,10 @@ public function databaseExists($database);
 /**
  * Function to create the database for the application
  *
- * @param string $database The name of the database
- * @param string $username The name of the database user
+ * @param string $database The name of the database.
+ * @param string $username The name of the database user.
  *
- * @return boolean true if database Created or exists WEBTEMPLATE Error otherwise
+ * @return boolean true if database Created or exists. DB Error otherwise
  *
  * @access public
  */
@@ -94,9 +94,9 @@ public function createDatabase($database, $username);
 /**
  * Function to drop the database for the application
  *
- * @param string $database The name of the database
+ * @param string $database The name of the database.
  *
- * @return boolean true if database Created or exists WEBTEMPLATE Error otherwise
+ * @return boolean true if database deleted. DB Error otherwise
  *
  * @access public
  */

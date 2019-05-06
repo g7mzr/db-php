@@ -4,7 +4,9 @@ title: Database Manager
 ---
 ## Introduction
 *DBManager* is the main interface to *db-php* and is the class that your application
-should call.  The API for the *DBManager* can be found at [Annex A](07_API_DBManager.md)
+should call.
+
+The API for the **DBManager** can be found at [Annex A](30_API_DBManager.md).
 
 See the example code shown below for creating the class in your application:
 ```php

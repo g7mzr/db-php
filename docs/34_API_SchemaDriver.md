@@ -23,10 +23,10 @@ public function startTransaction();
 /**
  * Function to end a database transaction
  *
- * This function ends a Database Transaction by eithe committing or rolling
+ * This function ends a Database Transaction by either committing or rolling
  * back the transaction based on the value of $commit
  *
- * @param boolean $commit Commmit transaction if true, rollback otherwise.
+ * @param boolean $commit Commit transaction if true, rollback otherwise.
  *
  * @return boolean true if transaction is started
  *
@@ -131,7 +131,7 @@ public function dropColumn($tableName, $columnName);
  * @param string $setdrop    SET or DROP the Attribute
  * @param string $value      The value of the attribute if it has one.
  *
- * @return mixed true if table created or WEBTEMPLATE error
+ * @return mixed true if table created or DB error
  *
  * @access public
  */

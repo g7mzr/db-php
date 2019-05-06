@@ -16,6 +16,25 @@ title: Annex C - Schema Manager API
  */
 public function __construct($dbManager)
 ```
+## autoSchemaManagement
+```php
+/**
+ * Automatic Schema Change
+ *
+ * This function automatically installs or updates a Schema using the main class
+ * functions.  It has been added to simplify schema management
+ *
+ * @param string  $filename   The fully qualified filename for the schema file
+ * @param boolean $newinstall If true this is new install
+ * @param string  $tablename  The name of the Schema Table
+ *
+ * @return mixed True if the schema has been loaded okay.  DB Error otherwise
+ *
+ * @access public
+ */
+public function autoSchemaManagement($filename, $newinstall = false, $tablename = "schema")
+```
+
 ## loadNewSchema
 ```php
 /**
