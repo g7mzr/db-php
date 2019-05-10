@@ -56,7 +56,7 @@ class Common
     public static function raiseError(
         string $message,
         int $code = 0,
-        $dbmessage = array()
+        array $dbmessage = array()
     ) {
         return new \g7mzr\db\common\Error($message, $code, $dbmessage);
     }

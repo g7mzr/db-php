@@ -716,7 +716,7 @@ class DatabaseDriver implements InterfaceDatabaseDriver
     /**
      * This function processes search data into a SQL string for searching
      *
-     * @param mixed $order The field the search is to be ordered by.  String or Null
+     * @param string $order The field the search is to be ordered by.
      *
      * @return string The  search data in SQL Format
      *

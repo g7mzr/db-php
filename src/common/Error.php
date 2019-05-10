@@ -54,7 +54,7 @@ class Error
     public function __construct(
         string $errorMsg,
         int $errorCode = 0,
-        $dbmessage = array()
+        array $dbmessage = array()
     ) {
         $this->errorMsg = $errorMsg;
         $this->errorCode = $errorCode;

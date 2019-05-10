@@ -65,10 +65,11 @@ class ErrorTest extends TestCase
      */
     public function testError()
     {
-        $err = new \g7mzr\db\common\Error('Test Error', 1, 'DB Message');
+        $err = new \g7mzr\db\common\Error('Test Error', 1, array("ErrMsg" => 'DB Message'));
         $this->assertEquals("Test Error", $err->getMessage());
         $this->assertEquals(1, $err->getCode());
-        $this->assertEquals("DB Message", $err->getDBMessage());
+        $dbmsg = $err->getDBMessage();
+        $this->assertEquals("DB Message", $dbmsg['ErrMsg']);
     }
 
     /**
@@ -81,10 +82,11 @@ class ErrorTest extends TestCase
      */
     public function testRaiseError()
     {
-        $err = \g7mzr\db\common\Common::raiseError('Test Error', 1, 'DB Message');
+        $err = \g7mzr\db\common\Common::raiseError('Test Error', 1, array("ErrMsg" => 'DB Message'));
         $this->assertEquals("Test Error", $err->getMessage());
         $this->assertEquals(1, $err->getCode());
-        $this->assertEquals("DB Message", $err->getDBMessage());
+        $dbmsg = $err->getDBMessage();
+        $this->assertEquals("DB Message", $dbmsg['ErrMsg']);
     }
 
     /**

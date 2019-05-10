@@ -15,6 +15,8 @@
 
 namespace g7mzr\db;
 
+use \g7mzr\db\common\Common;
+
 /**
  * The list below contains the error codes for the DB Module
  *
@@ -277,7 +279,7 @@ class DBManager
         if ($functionselected === true) {
             return true;
         } else {
-            return \g7mzr\db\common\Common::raiseError($errorMsg, 1, $driverError);
+            return Common::raiseError($errorMsg, 1, array("ErrMsg" => $driverError));
         }
     }
 
