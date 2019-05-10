@@ -1,21 +1,23 @@
 <?php
 /**
- * This file is part of g7mzr/db
- *
- * (c) Sandy McNeil <g7mzrdev@gmail.com>
+ * This file is part of PHP_Database_Client.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ *
+ * @package db-php
+ * @subpackage Schema Management
+ * @author   Sandy McNeil <g7mzrdev@gmail.com>
+ * @copyright (c) 2019, Sandy McNeil
+ * @license https://github.com/g7mzr/db-php/blob/master/LICENSE GNU General Public License v3.0
+ *
  */
+
 namespace g7mzr\db;
 
 /**
  * This Class is used to process the Database Schema Stored in json Files.
  *
- * @category DB
- * @package  Database
- * @author   Sandy McNeil <g7mzrdev@gmail.com>
- * @license  View the license file distributed with this source code
  **/
 class SchemaManager
 {
@@ -74,11 +76,13 @@ class SchemaManager
      * This class load and processed the Database Schema stores in json configuration
      * files.  It will either create a new schema or update and existing one.
      *
-     * @param \g7mzr\db\DBManager $dbManager Pointer to Database Manager Class
+     * @param \g7mzr\db\DBManager $dbManager Pointer to Database Manager Class.
+     *
+     * @throws \g7mzr\db\common\DBException If unable to set Schema Mode.
      *
      * @access public
      */
-    public function __construct($dbManager)
+    public function __construct(\g7mzr\db\DBManager $dbManager)
     {
         $this->dbManager = $dbManager;
         $result = $this->dbManager->setMode('schema');
@@ -117,15 +121,15 @@ class SchemaManager
      * This function automatically installs or updates a Schema using the main class
      * functions.  It has been added to simplify schema management
      *
-     * @param string  $filename   The fully qualified filename for the schema file
-     * @param boolean $newinstall If true this is new install
-     * @param string  $tablename  The name of the Schema Table
+     * @param string  $filename   The fully qualified filename for the schema file.
+     * @param boolean $newinstall If true this is new install.
+     * @param string  $tablename  The name of the Schema Table.
      *
      * @return mixed True if the schema has been loaded okay.  DB Error otherwise
      *
      * @access public
      */
-    public function autoSchemaManagement($filename, $newinstall = false, $tablename = "schema")
+    public function autoSchemaManagement(string $filename, bool $newinstall = false, string $tablename = "schema")
     {
         $newSchemaLoaded = $this->loadNewSchema($filename);
         if (\g7mzr\db\common\Common::isError($newSchemaLoaded)) {
@@ -166,13 +170,13 @@ class SchemaManager
      *
      * Load the new schema from the file system
      *
-     * @param string $filename The fully qualified filename for the schema file
+     * @param string $filename The fully qualified filename for the schema file.
      *
      * @return boolean True if the schema has been loaded okay.  DB Error otherwise
      *
      * @access public
      */
-    public function loadNewSchema($filename)
+    public function loadNewSchema(string $filename)
     {
         // Set the checkvariables
         $fileloaded = true;
@@ -243,7 +247,7 @@ class SchemaManager
     }
 
 
-    /*
+    /**
      * Function to obtain the new Schema Version Number
      *
      * This function returns the new schema version number
@@ -369,15 +373,13 @@ class SchemaManager
     /**
      * Function to save the New SCHEMA into the database
      *
-     * @param string $tablename The name of the Schema Table
-     *
-     * @param string  $table   The name of the Schema Table in the database
+     * @param string $tablename The name of the Schema Table.
      *
      * @return True if schema processed okay.  DB Error other wise
      *
      * @access public
      */
-    public function saveSchema($tablename = "schema")
+    public function saveSchema(string $tablename = "schema")
     {
         $result = $this->dbManager->getSchemaDriver()->saveSchema(
             $this->newSchemaversion,
@@ -396,13 +398,13 @@ class SchemaManager
     /**
      * Function to get the New SCHEMA from the database
      *
-     * @param string $tablename  The name of the Schema Table
+     * @param string $tablename The name of the Schema Table.
      *
      * @return True if schema processed okay.  DB Error other wise
      *
      * @access public
      */
-    public function getSchema($tablename = "schema")
+    public function getSchema(string $tablename = "schema")
     {
         $result = $this->dbManager->getSchemaDriver()->getSchema(
             $this->currentSchemaname,
@@ -421,7 +423,7 @@ class SchemaManager
 
 
 
-    /*
+    /**
      * Function to obtain the current Schema Version Number
      *
      * This function returns the current schema version number
@@ -471,6 +473,8 @@ class SchemaManager
      *
      * @return boolean True if Schema Versions are different
      *
+     * @throws \g7mzr\db\common\DBException If the two schema names do not match.
+     *
      * @access public
      */
     public function schemaChanged()
@@ -506,14 +510,14 @@ class SchemaManager
      *
      * Process a table and allow it to create a new table in the database
      *
-     * @param string $tablename The name of the table
-     * @param array  $tabledef  The definition of the  table
+     * @param string $tablename The name of the table.
+     * @param array  $tabledef  The definition of the table.
      *
      * @return mixed True if table processed okay.  DB Error other wise
      *
      * @access private
      */
-    private function processNewTable($tablename, $tabledef)
+    private function processNewTable(string $tablename, array $tabledef)
     {
         $errorMsg = '';
 
@@ -580,13 +584,13 @@ class SchemaManager
      * Process the columns for a new table
      *
      * @param string $tablename  The name of the table being updated.
-     * @param array  $columndata Array containing the column data
+     * @param array  $columndata Array containing the column data.
      *
      * @return mixed True if table processed okay.  DB Error other wise
      *
      * @access private
      */
-    private function processNewColumns($tablename, $columndata)
+    private function processNewColumns(string $tablename, array $columndata)
     {
         foreach ($columndata as $columnname => $data) {
             $columntype = null;
@@ -632,13 +636,13 @@ class SchemaManager
      * Process Foreign Keys
      *
      * @param string $tablename The name of the table being updated.
-     * @param array  $fkdata    Array containing the constraint data
+     * @param array  $fkdata    Array containing the constraint data.
      *
      * @return mixed True if table processed okay.  DB Error other wise
      *
      * @access private
      */
-    private function processFK($tablename, $fkdata)
+    private function processFK(string $tablename, array $fkdata)
     {
         foreach ($fkdata as $fkname => $data) {
             $columnname = $data['columnname'];
@@ -664,13 +668,13 @@ class SchemaManager
      * Process Constraints
      *
      * @param string $tablename The name of the table being updated.
-     * @param array  $indexdata Array containing the index data
+     * @param array  $indexdata Array containing the index data.
      *
      * @return mixed True if table processed okay.  DB Error other wise
      *
      * @access private
      */
-    private function processIndex($tablename, $indexdata)
+    private function processIndex(string $tablename, array $indexdata)
     {
         foreach ($indexdata as $indexname => $data) {
             $indexresult = $this->dbManager->getSchemaDriver()->createIndex(
@@ -691,14 +695,14 @@ class SchemaManager
     /**
      * Process Schema to identify Existing, New and Dropped tables
      *
-     * @param array $currentElement The Current Schema element (Table, Column etc)
-     * @param array $newElement     The new Schema element (Table, Column etc)
+     * @param array $currentElement The Current Schema element (Table, Column etc).
+     * @param array $newElement     The new Schema element (Table, Column etc).
      *
-     * @return mixed Multi diemsional Array of table names.  DB Error other wise
+     * @return mixed Multi dimensional Array of table names.  DB Error other wise
      *
      * @access private
      */
-    private function processElementChange($currentElement, $newElement)
+    private function processElementChange(array $currentElement, array $newElement)
     {
         $resultArray = array();
         $changearray = array();
@@ -731,13 +735,13 @@ class SchemaManager
     /**
      * Process Table Update
      *
-     * @param string $tablename The name of the table being updated
+     * @param string $tablename The name of the table being updated.
      *
      * @return mixed True if table processed okay.  DB Error other wise
      *
      * @access private
      */
-    private function processTableChange($tablename)
+    private function processTableChange(string $tablename)
     {
         // Drop the Foreign Keys Associated with this table prior to making the
         // changes to the table
@@ -829,19 +833,19 @@ class SchemaManager
      * Process the columns for a new table
      *
      * @param string $tablename   The name of the table being updated.
-     * @param string $columnname  The name of the column being updated
-     * @param array  $newdata     Array containing the new column data
-     * @param array  $currentdata Array containing the current column data
+     * @param string $columnname  The name of the column being updated.
+     * @param array  $newdata     Array containing the new column data.
+     * @param array  $currentdata Array containing the current column data.
      *
      * @return mixed True if table processed okay.  DB Error other wise
      *
      * @access private
      */
     private function processUpdateColumn(
-        $tablename,
-        $columnname,
-        $newdata,
-        $currentdata
+        string $tablename,
+        string $columnname,
+        array $newdata,
+        array $currentdata
     ) {
         $changeddata = $this->processElementChange($currentdata, $newdata);
         foreach ($changeddata['DROP'] as $attribute) {

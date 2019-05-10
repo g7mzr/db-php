@@ -1,12 +1,18 @@
 <?php
 /**
- * This file is part of DB
- *
- * (c) Sandy McNeil <g7mzrdev@gmail.com>
+ * This file is part of PHP_Database_Client.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ *
+ * @package db-php
+ * @subpackage UnitTest
+ * @author   Sandy McNeil <g7mzrdev@gmail.com>
+ * @copyright (c) 2019, Sandy McNeil
+ * @license https://github.com/g7mzr/db-php/blob/master/LICENSE GNU General Public License v3.0
+ *
  */
+
 namespace g7mzr\db\phpunit;
 
 // Include the Class Autoloader
@@ -18,13 +24,12 @@ require_once __DIR__ . '/../testconfig.php';
 use PHPUnit\Framework\TestCase;
 
 /**
- * Error Class Unit Tests
+ * SQLAdmin Class Unit Tests
  *
- * @category g7mzr\db
- * @package  Tests
- * @author   Sandy McNeil <g7mzrdev@gmail.com>
- * @license  View the license file distributed with this source code
- **/
+ * This module contains the UNITTESTS for the SQLAdmin module.The module chosen
+ * for the test will depend on the RDMS being used.
+ *
+ */
 class SQLAdminTest extends TestCase
 {
     /**
@@ -52,7 +57,7 @@ class SQLAdminTest extends TestCase
      * This function is called prior to any tests being run.
      * Its purpose is to set up any variables that are needed to tun the tests.
      *
-     * @return null No return data
+     * @return void No return data
      */
     protected function setUp()
     {
@@ -90,7 +95,9 @@ class SQLAdminTest extends TestCase
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.
      *
-     * @return null No return data
+     * @throws \Exception If not able to connect to the database.
+     *
+     * @return void No return data
      */
     protected function tearDown()
     {
@@ -128,7 +135,7 @@ class SQLAdminTest extends TestCase
      * @group unittest
      * @group DatabaseAccess
      *
-     * @return null
+     * @return void No return data
      */
     public function testFailtoConnectAdmin()
     {
@@ -157,7 +164,7 @@ class SQLAdminTest extends TestCase
      * @group unittest
      * @group DatabaseAccess
      *
-     * @return null
+     * @return void No return data
      */
     public function testDBVersion()
     {
@@ -172,7 +179,7 @@ class SQLAdminTest extends TestCase
      * @group unittest
      * @group DatabaseAccess
      *
-     * @return null
+     * @return void No return data
      */
     public function testUserExistsExistingUser()
     {
@@ -190,7 +197,7 @@ class SQLAdminTest extends TestCase
      * @group unittest
      * @group DatabaseAccess
      *
-     * @return null
+     * @return void No return data
      */
     public function testUserExistsNoUser()
     {
@@ -208,7 +215,7 @@ class SQLAdminTest extends TestCase
      * @group unittest
      * @group DatabaseAccess
      *
-     * @return null
+     * @return void No return data
      */
     public function testCreateUserExistingUser()
     {
@@ -232,7 +239,7 @@ class SQLAdminTest extends TestCase
      * @group DatabaseAccess
      * @depends testUserExistsExistingUser
      *
-     * @return null
+     * @return void No return data
      */
     public function testCreateUserNewUser()
     {
@@ -260,7 +267,7 @@ class SQLAdminTest extends TestCase
      * @group DatabaseAccess
      * @depends testCreateUserNewUser
      *
-     * @return null
+     * @return void No return data
      */
     public function testDropExistingUser()
     {
@@ -303,7 +310,7 @@ class SQLAdminTest extends TestCase
      * @group DatabaseAccess
      * @depends testCreateUserNewUser
      *
-     * @return null
+     * @return void No return data
      */
     public function testDropNonExistingUser()
     {
@@ -322,7 +329,7 @@ class SQLAdminTest extends TestCase
      * @group unittest
      * @group DatabaseAccess
      *
-     * @return null
+     * @return void No return data
      */
     public function testDatabaseExistsExistingDataBase()
     {
@@ -341,7 +348,7 @@ class SQLAdminTest extends TestCase
      * @group unittest
      * @group DatabaseAccess
      *
-     * @return null
+     * @return void No return data
      */
     public function testDatabaseExistsNoDataBase()
     {
@@ -360,7 +367,7 @@ class SQLAdminTest extends TestCase
      * @group unittest
      * @group DatabaseAccess
      *
-     * @return null
+     * @return void No return data
      */
     public function testCreateDataBase()
     {
@@ -383,7 +390,7 @@ class SQLAdminTest extends TestCase
      * @group unittest
      * @group DatabaseAccess
      *
-     * @return null
+     * @return void No return data
      */
     public function testCreateDataBaseExistingDatabase()
     {
@@ -416,7 +423,7 @@ class SQLAdminTest extends TestCase
      * @group unittest
      * @group DatabaseAccess
      *
-     * @return null
+     * @return void No return data
      */
     public function testDropDataBaseExistingDatabase()
     {
@@ -446,7 +453,7 @@ class SQLAdminTest extends TestCase
      * @group unittest
      * @group DatabaseAccess
      *
-     * @return null
+     * @return void No return data
      */
     public function testDropDataBaseNonExistingDatabase()
     {

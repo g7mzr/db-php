@@ -1,12 +1,18 @@
 <?php
 /**
- * This file is part of Webtemplate.
- *
- * (c) Sandy McNeil <g7mzrdev@gmail.com>
+ * This file is part of PHP_Database_Client.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ *
+ * @package db-php
+ * @subpackage UnitTest
+ * @author   Sandy McNeil <g7mzrdev@gmail.com>
+ * @copyright (c) 2019, Sandy McNeil
+ * @license https://github.com/g7mzr/db-php/blob/master/LICENSE GNU General Public License v3.0
+ *
  */
+
 namespace g7mzr\db\phpunit;
 
 // Include the Class Autoloader
@@ -17,11 +23,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * Error Class Unit Tests
  *
- * @category g7mzr\db
- * @package  Tests
- * @author   Sandy McNeil <g7mzrdev@gmail.com>
- * @license  View the license file distributed with this source code
- **/
+ */
 class ErrorTest extends TestCase
 {
     /**
@@ -36,7 +38,7 @@ class ErrorTest extends TestCase
      * This function is called prior to any tests being run.
      * Its purpose is to set up any variables that are needed to tun the tests.
      *
-     * @return null No return data
+     * @return void No return data
      */
     protected function setUp()
     {
@@ -46,7 +48,7 @@ class ErrorTest extends TestCase
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.
      *
-     * @return null No return data
+     * @return void No return data
      */
     protected function tearDown()
     {
@@ -59,7 +61,7 @@ class ErrorTest extends TestCase
      * @group unittest
      * @group error
      *
-     * @return null
+     * @return void No return data
      */
     public function testError()
     {
@@ -75,7 +77,7 @@ class ErrorTest extends TestCase
      * @group unittest
      * @group error
      *
-     * @return null
+     * @return void No return data
      */
     public function testRaiseError()
     {
@@ -91,7 +93,7 @@ class ErrorTest extends TestCase
      * @group unittest
      * @group error
      *
-     * @return null
+     * @return void No return data
      */
     public function testisError()
     {

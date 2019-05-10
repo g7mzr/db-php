@@ -1,12 +1,18 @@
 <?php
 /**
- * This file is part of g7mzr/db
- *
- * (c) Sandy McNeil <g7mzrdev@gmail.com>
+ * This file is part of PHP_Database_Client.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ *
+ * @package db-php
+ * @subpackage Drivers
+ * @author   Sandy McNeil <g7mzrdev@gmail.com>
+ * @copyright (c) 2019, Sandy McNeil
+ * @license https://github.com/g7mzr/db-php/blob/master/LICENSE GNU General Public License v3.0
+ *
  */
+
 namespace g7mzr\db\drivers\pgsql;
 
 use g7mzr\db\interfaces\InterfaceDatabaseDriver;
@@ -16,12 +22,7 @@ use g7mzr\db\interfaces\InterfaceDatabaseDriver;
  * the InterfaceDatabaseDriver interface to provide access to the PGSQL database
  * via PDO
  *
- * @category Webtemplate
- * @package  Database
- * @author   Sandy McNeil <g7mzrdev@gmail.com>
- * @license  View the license file distributed with this source code
  **/
-
 class DatabaseDriver implements InterfaceDatabaseDriver
 {
     /**
@@ -77,12 +78,14 @@ class DatabaseDriver implements InterfaceDatabaseDriver
      * Sets up the PGSQL Driver dsn from the calling function
      * and any PDO specific options.
      *
-     * @param array $dsn an array containing the database connection details.
-     * @param boolean $persistent Set true for persistent connection to database
+     * @param array   $dsn        An array containing the database connection details.
+     * @param boolean $persistent Set true for persistent connection to database.
+     *
+     * @throws \g7mzr\db\common\DBException If unable to connect to the database.
      *
      * @access public
      */
-    public function __construct($dsn, $persistent = false)
+    public function __construct(array $dsn, bool $persistent = false)
     {
         $conStr = sprintf(
             "pgsql:host=%s;port=%d;dbname=%s",
@@ -134,12 +137,15 @@ class DatabaseDriver implements InterfaceDatabaseDriver
      *
      * This function starts a Database Transaction
      *
-     * @return string database Version
+     * @return string database Version.
      *
      * @access public
      */
     public function getDBVersion()
     {
+        // Set rowCount to 0;
+        $this->rowcount = 0;
+
         $databaseversion = gettext("Error Getting Database Version");
         $this->sql = "SELECT version()";
         $this->stmt = $this->pdo->prepare($this->sql);
@@ -162,12 +168,15 @@ class DatabaseDriver implements InterfaceDatabaseDriver
      *
      * This function starts a Database Transaction
      *
-     * @return boolean true if transaction is started
+     * @return boolean true if transaction is started.
      *
      * @access public
      */
     public function startTransaction()
     {
+        // Set rowCount to 0;
+        $this->rowcount = 0;
+
         $this->stmt = $this->pdo->prepare("BEGIN TRANSACTION");
         $resultID = $this->stmt->execute();
         return $resultID;
@@ -176,17 +185,20 @@ class DatabaseDriver implements InterfaceDatabaseDriver
     /**
      * Function to end a database transaction
      *
-     * This function ends a Database Transaction by eithe committing or rolling
+     * This function ends a Database Transaction by either committing or rolling
      * back the transaction based on the value of $commit
      *
-     * @param boolean $commit Commmit transiaction if true, rollback otherwise.
+     * @param boolean $commit Commit transaction if true, rollback otherwise.
      *
-     * @return boolean true if transaction is started
+     * @return boolean true if transaction end command is successful
      *
      * @access public
      */
-    public function endTransaction($commit)
+    public function endTransaction(bool $commit)
     {
+        // Set rowCount to 0;
+        $this->rowcount = 0;
+
         if ($commit == true) {
             $this->stmt = $this->pdo->prepare("COMMIT");
             $resultID = $this->stmt->execute();
@@ -200,16 +212,19 @@ class DatabaseDriver implements InterfaceDatabaseDriver
     /**
      * This function returns the last insert id for the selected table
      *
-     * @param string $tableName The name of the table data was inserted to
-     * @param string $idfield   The name of the id field the table
-     * @param string $srchfield The name of the field where the sreach data is saved
-     * @param string $srchdata  The unique name entered in to the field
+     * @param string $tableName The name of the table data was inserted to.
+     * @param string $idfield   The name of the id field the table.
+     * @param string $srchfield The name of the field where the search data is saved.
+     * @param string $srchdata  The unique name entered in to the field.
      *
-     * @return integer The id of the last record inserted or WEBTEMPLATE error type
+     * @return integer The id of the last record inserted or DB error type
      * @access public
      */
-    public function dbinsertid($tableName, $idfield, $srchfield, $srchdata)
+    public function dbinsertid(string $tableName, string $idfield, string $srchfield, string $srchdata)
     {
+        // Set rowCount to 0;
+        $this->rowcount = 0;
+
         $result = -1;
         $this->sql = "SELECT $idfield FROM $tableName WHERE ";
         $this->sql .= "$srchfield = '$srchdata'";
@@ -242,6 +257,9 @@ class DatabaseDriver implements InterfaceDatabaseDriver
      */
     public function disconnect()
     {
+        // Set rowCount to 0;
+        $this->rowcount = 0;
+
         $this->stmt = null;
         $this->pdo = null;
         return true;
@@ -263,14 +281,16 @@ class DatabaseDriver implements InterfaceDatabaseDriver
     /**
      * This function inserts a single record to the database
      *
-     * @param string $tableName  The name of the table data is to be inserted to
-     * @param array  $insertData The name of the fields and data to be inserted
+     * @param string $tableName  The name of the table data is to be inserted to.
+     * @param array  $insertData The name of the fields and data to be inserted.
      *
-     * @return boolean True if insert is ok or WEBTEMPLATE error type
+     * @return boolean True if insert is ok or DB error type
      * @access public
      */
-    public function dbinsert($tableName, $insertData)
+    public function dbinsert(string $tableName, array $insertData)
     {
+        // Set rowCount to 0;
+        $this->rowcount = 0;
 
         // Initialise the data array
         $data = array();
@@ -331,15 +351,17 @@ class DatabaseDriver implements InterfaceDatabaseDriver
     /**
      * This function updates a single record to the database
      *
-     * @param string $tableName  The name of the table data is to be inserted to
-     * @param array  $insertData The name of the fields and data to be inserted
-     * @param array  $searchdata The field and data to be used in the "WHERE" clause
+     * @param string $tableName  The name of the table data is to be inserted to.
+     * @param array  $insertData The name of the fields and data to be inserted.
+     * @param array  $searchdata The field and data to be used in the "WHERE" clause.
      *
-     * @return boolean True if insert is okay or WEBTEMPLATE error type
+     * @return boolean True if insert is okay or DB error type
      * @access public
      */
-    public function dbupdate($tableName, $insertData, $searchdata)
+    public function dbupdate(string $tableName, array $insertData, array $searchdata)
     {
+        // Set rowCount to 0;
+        $this->rowcount = 0;
 
         // Initialise the data array
         $data = array();
@@ -383,7 +405,7 @@ class DatabaseDriver implements InterfaceDatabaseDriver
             }
         }
 
-        //If all went okay return true.  If not return a WEBTEMPLATE error
+        //If all went okay return true.  If not return a DB error
         if ($saveok) {
             return true;
         } else {
@@ -395,15 +417,17 @@ class DatabaseDriver implements InterfaceDatabaseDriver
     /**
      * This function selects a single record from the database
      *
-     * @param string $tableName  The name of the table data is to be selected from
-     * @param array  $fieldNames The name of the fields to select from the database
-     * @param array  $searchdata The field and data to be used in the "WHERE" clause
+     * @param string $tableName  The name of the table data is to be selected from.
+     * @param array  $fieldNames The name of the fields to select from the database.
+     * @param array  $searchdata The field and data to be used in the "WHERE" clause.
      *
-     * @return array Search data if search is ok or WEBTEMPLATE error type
+     * @return array Search data if search is ok or DB error type
      * @access public
      */
-    public function dbselectsingle($tableName, $fieldNames, $searchdata)
+    public function dbselectsingle(string $tableName, array $fieldNames, array $searchdata)
     {
+        // Set rowCount to 0;
+        $this->rowcount = 0;
 
         // Build SQL statement
         $this->sql = "SELECT ";
@@ -453,22 +477,24 @@ class DatabaseDriver implements InterfaceDatabaseDriver
     /**
      * This function returns a search from the database
      *
-     * @param string $tableName  Name of the table data is to be selected from
-     * @param array  $fieldNames Name of the fields to select from the database
-     * @param array  $searchdata Field and data to be used in the "WHERE" clause
-     * @param string $order      Field used to order the selected data
-     * @param array  $join       Data used to join tables for the search
+     * @param string $tableName  Name of the table data is to be selected from.
+     * @param array  $fieldNames Name of the fields to select from the database.
+     * @param array  $searchdata Field and data to be used in the "WHERE" clause.
+     * @param string $order      Field used to order the selected data.
+     * @param array  $join       Data used to join tables for the search.
      *
-     * @return array Search data if search is ok or WEBTEMPLATE error type
+     * @return array Search data if search is OK or DB error type
      * @access public
      */
     public function dbselectmultiple(
-        $tableName,
-        $fieldNames,
-        $searchdata,
-        $order = null,
-        $join = null
+        string $tableName,
+        array $fieldNames,
+        array $searchdata,
+        string $order = '',
+        array $join = array()
     ) {
+        // Set rowCount to 0;
+        $this->rowcount = 0;
 
         // Build SQL statement
         $this->sql = "SELECT ";
@@ -516,14 +542,16 @@ class DatabaseDriver implements InterfaceDatabaseDriver
      * in format "columnname" => "search data".  It only deletes data which matches
      * exactly
      *
-     * @param string $tableName  The name of the table data is to be deleted from
-     * @param array  $searchdata The field and data to be used in the "WHERE" clause
+     * @param string $tableName  The name of the table data is to be deleted from.
+     * @param array  $searchdata The field and data to be used in the "WHERE" clause.
      *
-     * @return boolean if rows deleted or WEBTEMPLATE error type
+     * @return boolean if rows deleted or DB error type
      * @access public
      */
-    public function dbdelete($tableName, $searchdata)
+    public function dbdelete(string $tableName, array $searchdata)
     {
+        // Set rowCount to 0;
+        $this->rowcount = 0;
 
         $this->sql = "DELETE FROM ". $tableName . " WHERE ";
         while ($data = current($searchdata)) {
@@ -551,14 +579,16 @@ class DatabaseDriver implements InterfaceDatabaseDriver
      * The data to be used for the where clause is in an array called $searchdata
      * in format "columnname" => array("type" => "<,> or =", "data" => "search data")
      *
-     * @param string $tableName  The name of the table data is to be deleted from
-     * @param array  $searchdata The field and data to be used in the "WHERE" clause
+     * @param string $tableName  The name of the table data is to be deleted from.
+     * @param array  $searchdata The field and data to be used in the "WHERE" clause.
      *
-     * @return boolean true if search is ok or WEBTEMPLATE error type
+     * @return boolean true if search is ok or DB error type
      * @access public
      */
-    public function dbdeletemultiple($tableName, $searchdata)
+    public function dbdeletemultiple(string $tableName, array $searchdata)
     {
+        // Set rowCount to 0;
+        $this->rowcount = 0;
 
         $this->sql = "DELETE FROM ". $tableName . " WHERE ";
         while ($data = current($searchdata)) {
@@ -581,7 +611,7 @@ class DatabaseDriver implements InterfaceDatabaseDriver
     }
 
     /**
-     * Get the rowcount of the last activity
+     * Get the number of rows affected by the last command
      *
      * @return integer
      * @access public
@@ -607,13 +637,13 @@ class DatabaseDriver implements InterfaceDatabaseDriver
     /**
      * This function processes the field to be returned into  a SQL string
      *
-     * @param array $fieldNames The fields to be returned as part of the search
+     * @param array $fieldNames The fields to be returned as part of the search.
      *
      * @return string The combined join statements in SQL Format
      *
      * @access private
      */
-    private function processSearchFields($fieldNames)
+    private function processSearchFields(array $fieldNames)
     {
 
         $sql = '';
@@ -630,17 +660,17 @@ class DatabaseDriver implements InterfaceDatabaseDriver
     /**
      * This function processes join statements into a SQL string for searching
      *
-     * @param array $join The field to be returned as part of the search
+     * @param array $join The field to be returned as part of the search.
      *
      * @return string The combined join statements in SQL Format
      *
      * @access private
      */
-    private function processJoin($join)
+    private function processJoin(array $join)
     {
 
         $sql = '';
-        if ($join != null) {
+        if (count($join) > 0) {
             $sql .= ' INNER JOIN';
             $sql .= ' ' . $join['table2'];
             $sql .= ' ON (';
@@ -657,13 +687,13 @@ class DatabaseDriver implements InterfaceDatabaseDriver
     /**
      * This function processes search data nto a SQL string for searching
      *
-     * @param array $searchdata The field to be returned as part of the search
+     * @param array $searchdata The field to be returned as part of the search.
      *
      * @return string The  search data in SQL Format
      *
      * @access private
      */
-    private function processSearchData($searchdata)
+    private function processSearchData(array $searchdata)
     {
 
         $sql = '';
@@ -684,19 +714,19 @@ class DatabaseDriver implements InterfaceDatabaseDriver
     }
 
     /**
-     * This function processes search data nto a SQL string for searching
+     * This function processes search data into a SQL string for searching
      *
-     * @param string $order Thefield the search is to be ordered by
+     * @param mixed $order The field the search is to be ordered by.  String or Null
      *
      * @return string The  search data in SQL Format
      *
      * @access private
      */
-    private function processSearchOrder($order)
+    private function processSearchOrder(string $order)
     {
 
         $sql= '';
-        if ($order != null) {
+        if ($order != '') {
             $sql .= " ORDER BY " . $order . " ASC";
         }
 
@@ -726,15 +756,15 @@ class DatabaseDriver implements InterfaceDatabaseDriver
      * This function binds the inputs to the place holders we put in place in the
      * sql statement prepared using the query function.
      *
-     * @param string $param The name of the placeholder the variable is to be bound.
-     * @param mixed  $value The value to be bound to the placeholder
-     * @param int    $type  The type of variable defined using PDO Constants.
+     * @param string  $param The name of the placeholder the variable is to be bound.
+     * @param mixed   $value The value to be bound to the placeholder.
+     * @param integer $type  The type of variable defined using PDO Constants.
      *
      * @return boolean always true
      *
      * @access private
      */
-    private function bind($param, $value, $type = null)
+    private function bind(string $param, $value, int $type = null)
     {
         if (is_null($type)) {
             switch (true) {

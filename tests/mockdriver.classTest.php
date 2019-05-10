@@ -1,12 +1,18 @@
 <?php
 /**
- * This file is part of DB
- *
- * (c) Sandy McNeil <g7mzrdev@gmail.com>
+ * This file is part of PHP_Database_Client.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ *
+ * @package db-php
+ * @subpackage UnitTest
+ * @author   Sandy McNeil <g7mzrdev@gmail.com>
+ * @copyright (c) 2019, Sandy McNeil
+ * @license https://github.com/g7mzr/db-php/blob/master/LICENSE GNU General Public License v3.0
+ *
  */
+
 namespace g7mzr\db\phpunit;
 
 // Include the Class Autoloader
@@ -18,13 +24,11 @@ require_once __DIR__ . '/../testconfig.php';
 use PHPUnit\Framework\TestCase;
 
 /**
- * Error Class Unit Tests
+ * Mock Database Driver Class Unit Tests
  *
- * @category g7mzr\db
- * @package  Tests
- * @author   Sandy McNeil <g7mzrdev@gmail.com>
- * @license  View the license file distributed with this source code
- **/
+ * This module is used to test the functionality of the MOCK database driver.
+ *
+ */
 class MockDriverTest extends TestCase
 {
     /**
@@ -38,7 +42,9 @@ class MockDriverTest extends TestCase
      * This function is called prior to any tests being run.
      * Its purpose is to set up any variables that are needed to tun the tests.
      *
-     * @return null No return data
+     * @throws \Exception If unable to connect to the database.
+     *
+     * @return void No return data
      */
     protected function setUp()
     {
@@ -63,7 +69,7 @@ class MockDriverTest extends TestCase
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.
      *
-     * @return null No return data
+     * @return void No return data
      */
     protected function tearDown()
     {
@@ -76,7 +82,9 @@ class MockDriverTest extends TestCase
      * @group unittest
      * @group error
      *
-     * @return null
+     * @throws \Exception If unable to connect to the database.
+     *
+     * @return void No return data
      */
     public function testDestruct()
     {
@@ -103,7 +111,7 @@ class MockDriverTest extends TestCase
      * @group unittest
      * @group error
      *
-     * @return null
+     * @return void No return data
      */
     public function testDBVersionPass()
     {
@@ -124,7 +132,7 @@ class MockDriverTest extends TestCase
      * @group unittest
      * @group error
      *
-     * @return null
+     * @return void No return data
      */
     public function testDBVersionFail()
     {
@@ -160,7 +168,7 @@ class MockDriverTest extends TestCase
      * @group unittest
      * @group error
      *
-     * @return null
+     * @return void No return data
      */
     public function teststartTransactionPass()
     {
@@ -181,7 +189,7 @@ class MockDriverTest extends TestCase
      * @group unittest
      * @group error
      *
-     * @return null
+     * @return void No return data
      */
     public function teststartTransactionFail()
     {
@@ -218,7 +226,7 @@ class MockDriverTest extends TestCase
      * @group unittest
      * @group error
      *
-     * @return null
+     * @return void No return data
      */
     public function testendTransactionPass()
     {
@@ -239,7 +247,7 @@ class MockDriverTest extends TestCase
      * @group unittest
      * @group error
      *
-     * @return null
+     * @return void No return data
      */
     public function testendTransactionFail()
     {
@@ -276,7 +284,7 @@ class MockDriverTest extends TestCase
      * @group unittest
      * @group error
      *
-     * @return null
+     * @return void No return data
      */
     public function testdbInsertPass()
     {
@@ -298,7 +306,7 @@ class MockDriverTest extends TestCase
      * @group unittest
      * @group error
      *
-     * @return null
+     * @return void No return data
      */
     public function testdbInsertFail()
     {
@@ -341,7 +349,7 @@ class MockDriverTest extends TestCase
      * @group unittest
      * @group error
      *
-     * @return null
+     * @return void No return data
      */
     public function testdbInsertIDPass()
     {
@@ -384,7 +392,7 @@ class MockDriverTest extends TestCase
      * @group unittest
      * @group error
      *
-     * @return null
+     * @return void No return data
      */
     public function testdbInsertIDFail()
     {
@@ -439,7 +447,7 @@ class MockDriverTest extends TestCase
      * @group unittest
      * @group error
      *
-     * @return null
+     * @return void No return data
      */
     public function testdbUpdatePass()
     {
@@ -462,7 +470,7 @@ class MockDriverTest extends TestCase
      * @group unittest
      * @group error
      *
-     * @return null
+     * @return void No return data
      */
     public function testdbUpdateFail()
     {
@@ -506,7 +514,7 @@ class MockDriverTest extends TestCase
      * @group unittest
      * @group error
      *
-     * @return null
+     * @return void No return data
      */
     public function testdbSelectSinglePass()
     {
@@ -537,7 +545,7 @@ class MockDriverTest extends TestCase
      * @group unittest
      * @group error
      *
-     * @return null
+     * @return void No return data
      */
     public function testdbSelectSingleNotFound()
     {
@@ -567,7 +575,7 @@ class MockDriverTest extends TestCase
      * @group unittest
      * @group error
      *
-     * @return null
+     * @return void No return data
      */
     public function testdbSelectSingleFailed()
     {
@@ -623,7 +631,7 @@ class MockDriverTest extends TestCase
      * @group unittest
      * @group error
      *
-     * @return null
+     * @return void No return data
      */
     public function testdbSelectMultiplePass()
     {
@@ -653,7 +661,7 @@ class MockDriverTest extends TestCase
      * @group unittest
      * @group error
      *
-     * @return null
+     * @return void No return data
      */
     public function testdbDeletePass()
     {
@@ -675,7 +683,7 @@ class MockDriverTest extends TestCase
      * @group unittest
      * @group error
      *
-     * @return null
+     * @return void No return data
      */
     public function testdbDeleteFail()
     {
@@ -718,7 +726,7 @@ class MockDriverTest extends TestCase
      * @group unittest
      * @group error
      *
-     * @return null
+     * @return void No return data
      */
     public function testdbDeleteMultipleFail()
     {
@@ -738,7 +746,7 @@ class MockDriverTest extends TestCase
      * @group unittest
      * @group error
      *
-     * @return null
+     * @return void No return data
      */
     public function testrowCount()
     {

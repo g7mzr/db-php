@@ -1,22 +1,26 @@
 <?php
 /**
- * This file is part of g7mzr/db
- *
- * (c) Sandy McNeil <g7mzrdev@gmail.com>
+ * This file is part of PHP_Database_Client.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ *
+ * @package db-php
+ * @subpackage UnitTest
+ * @author   Sandy McNeil <g7mzrdev@gmail.com>
+ * @copyright (c) 2019, Sandy McNeil
+ * @license https://github.com/g7mzr/db-php/blob/master/LICENSE GNU General Public License v3.0
+ *
  */
+
 namespace g7mzr\db\dbconfig;
 
 /**
- * PGSQL Configuration Class for Unit Testing
+ * PGSQL Configuration Class for Unit Testing.
  *
- * @category g7mzr/db
- * @package  UnitTesting
- * @author   Sandy McNeil <g7mzrdev@gmail.com>
- * @license  View the license file distributed with this source code
- **/
+ * This module is used to configure a PGSQL database for unit testing
+ *
+ */
 class DBConfigpgsql
 {
     /**
@@ -31,11 +35,11 @@ class DBConfigpgsql
     /**
      * This function configures the database for unit testing
      *
-     * @param array $dsn Database configuration details
+     * @param array $dsn Database configuration details.
      *
      * @return boolean True if the database is configured
      */
-    public function configdb($dsn)
+    public function configdb(array $dsn)
     {
 
         $createnewdatabase = $this->createdb($dsn);
@@ -55,13 +59,13 @@ class DBConfigpgsql
      * This function deletes existing test databases and creates
      * a new blank one
      *
-     * @param array $dsn The database connection details
+     * @param array $dsn The database connection details.
      *
      * @return boolean True if database is created false otherwise
      *
      * @access private
      */
-    private function createdb($dsn)
+    private function createdb(array $dsn)
     {
         $conStr = sprintf(
             "pgsql:host=%s;port=%d;dbname=%s;user=%s;password=%s",
@@ -104,13 +108,13 @@ class DBConfigpgsql
     /**
      * This function creates the test schema and data
      *
-     * @param array $dsn The database connection details
+     * @param array $dsn The database connection details.
      *
      * @return boolean True if schema is created false otherwise
      *
      * @access private
      */
-    private function createschema($dsn)
+    private function createschema(array $dsn)
     {
         // SWITCH TO THE NEW DATABASE
         $conStr = sprintf(

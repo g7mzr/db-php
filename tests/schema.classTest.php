@@ -1,12 +1,18 @@
 <?php
 /**
- * This file is part of DB
- *
- * (c) Sandy McNeil <g7mzrdev@gmail.com>
+ * This file is part of PHP_Database_Client.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ *
+ * @package db-php
+ * @subpackage UnitTest
+ * @author   Sandy McNeil <g7mzrdev@gmail.com>
+ * @copyright (c) 2019, Sandy McNeil
+ * @license https://github.com/g7mzr/db-php/blob/master/LICENSE GNU General Public License v3.0
+ *
  */
+
 namespace g7mzr\db\phpunit;
 
 // Include the Class Autoloader
@@ -18,13 +24,11 @@ require_once __DIR__ . '/../testconfig.php';
 use PHPUnit\Framework\TestCase;
 
 /**
- * Error Class Unit Tests
+ * ESchema Class Unit Tests
  *
- * @category g7mzr\db
- * @package  Tests
- * @author   Sandy McNeil <g7mzrdev@gmail.com>
- * @license  View the license file distributed with this source code
- **/
+ * This module is used to test the functions used to create, modify and delete the
+ * database schema
+ */
 class SchemaTest extends TestCase
 {
     /**
@@ -52,7 +56,9 @@ class SchemaTest extends TestCase
      * This function is called prior to any tests being run.
      * Its purpose is to set up any variables that are needed to tun the tests.
      *
-     * @return null No return data
+     * @throws \Exception If unable to connect to the database.
+     *
+     * @return void No return data
      */
     protected function setUp()
     {
@@ -90,7 +96,9 @@ class SchemaTest extends TestCase
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.
      *
-     * @return null No return data
+     * @throws \Exception If unable to connect to the database.
+     *
+     * @return void No return data
      */
     protected function tearDown()
     {
@@ -128,11 +136,11 @@ class SchemaTest extends TestCase
     /**
      * This function prepares the test schema for a number of the tests
      *
-     * @param string $schema The test Schema
+     * @param string $schema The test Schema.
      *
      * @return boolean True if the schema is loaded okay DB Error otherwise
      */
-    private function prepareTestSchema($schema = "/testdata/schema.json")
+    private function prepareTestSchema(string $schema = "/testdata/schema.json")
     {
         $schemaprepared = true;
 
@@ -176,8 +184,6 @@ class SchemaTest extends TestCase
      * This function deletes the schema table contents for certain tests
      *
      * @return boolean True if the schema is loaded okay DB Error otherwise
-     *
-     * @access private
      */
     private function clearSchema()
     {
@@ -196,7 +202,7 @@ class SchemaTest extends TestCase
      * @group unittest
      * @group DatabaseAccess
      *
-     * @return null
+     * @return void No return data
      */
     public function testLoadNewSchemaFailFileNotFound()
     {
@@ -216,7 +222,7 @@ class SchemaTest extends TestCase
      * @group unittest
      * @group DatabaseAccess
      *
-     * @return null
+     * @return void no return data
      */
     public function testLoadNewSchemaFailInvalidFormat()
     {
@@ -235,7 +241,7 @@ class SchemaTest extends TestCase
      * @group unittest
      * @group DatabaseAccess
      *
-     * @return null
+     * @return void No return data
      */
     public function testLoadNewSchemaPass()
     {
@@ -261,7 +267,7 @@ class SchemaTest extends TestCase
      *
      * @depends  testLoadNewSchemaPass
      *
-     * @return null
+     * @return void No return data
      */
     public function testCreateTablePass()
     {
@@ -287,7 +293,7 @@ class SchemaTest extends TestCase
      *
      * @depends  testLoadNewSchemaPass
      *
-     * @return null
+     * @return void No return data
      */
     public function testCreateTableFailNoColumns()
     {
@@ -312,7 +318,7 @@ class SchemaTest extends TestCase
      *
      * @depends  testLoadNewSchemaPass
      *
-     * @return null
+     * @return void No return data
      */
     public function testCreateTableFailDuplicatetable()
     {
@@ -337,7 +343,7 @@ class SchemaTest extends TestCase
      *
      * @depends  testLoadNewSchemaPass
      *
-     * @return null
+     * @return void No return data
      */
     public function testCreateTableFailDuplicateColumn()
     {
@@ -363,7 +369,7 @@ class SchemaTest extends TestCase
      *
      * @depends  testLoadNewSchemaPass
      *
-     * @return null
+     * @return void No return data
      */
     public function testCreateTableFailForeignKey()
     {
@@ -388,7 +394,7 @@ class SchemaTest extends TestCase
      *
      * @depends  testLoadNewSchemaPass
      *
-     * @return null
+     * @return void no return data
      */
     public function testCreateTableFailIndex()
     {
@@ -414,7 +420,7 @@ class SchemaTest extends TestCase
      * @group unittest
      * @group DatabaseAccess
      *
-     * @return null
+     * @return void no return data
      */
     public function testsaveSchemaPass()
     {
@@ -437,7 +443,7 @@ class SchemaTest extends TestCase
      * @group unittest
      * @group DatabaseAccess
      *
-     * @return null
+     * @return void no return data
      */
     public function testsaveSchemaFail()
     {
@@ -463,7 +469,7 @@ class SchemaTest extends TestCase
      *
      * @depends testsaveSchemaPass
      *
-     * @return null
+     * @return void no return data
      */
     public function testGetEmptySchema()
     {
@@ -485,7 +491,7 @@ class SchemaTest extends TestCase
      *
      * @depends testsaveSchemaPass
      *
-     * @return null
+     * @return void no return data
      */
     public function testGetSchemaFailSQL()
     {
@@ -508,7 +514,7 @@ class SchemaTest extends TestCase
      *
      * @depends testsaveSchemaPass
      *
-     * @return null
+     * @return void no return data
      */
     public function testGetSchema()
     {
@@ -549,7 +555,7 @@ class SchemaTest extends TestCase
      *
      * @depends testsaveSchemaPass
      *
-     * @return null
+     * @return void no return data
      */
     public function testSchemaNoChange()
     {
@@ -578,7 +584,7 @@ class SchemaTest extends TestCase
      *
      * @depends testsaveSchemaPass
      *
-     * @return null
+     * @return void no return data
      */
     public function testSchemaChanged()
     {
@@ -611,7 +617,7 @@ class SchemaTest extends TestCase
      *
      * @depends testsaveSchemaPass
      *
-     * @return null
+     * @return void no return data
      */
     public function testProcessSchemaUpdateFAilNoCurrentSchema()
     {
@@ -633,7 +639,7 @@ class SchemaTest extends TestCase
      *
      * @depends testsaveSchemaPass
      *
-     * @return null
+     * @return void no return data
      */
     public function testProcessSchemaUpdateFAilNoNewchema()
     {
@@ -661,7 +667,7 @@ class SchemaTest extends TestCase
      *
      * @depends testsaveSchemaPass
      *
-     * @return null
+     * @return void no return data
      */
     public function testProcessSchemaDropTable3Pass()
     {
@@ -710,7 +716,7 @@ class SchemaTest extends TestCase
      *
      * @depends testsaveSchemaPass
      *
-     * @return null
+     * @return void no return data
      */
     public function testProcessSchemaDropTable3Twice()
     {
@@ -765,7 +771,7 @@ class SchemaTest extends TestCase
      *
      * @depends testsaveSchemaPass
      *
-     * @return null
+     * @return void no return data
      */
     public function testProcessSchemaCreateTable4Pass()
     {
@@ -811,7 +817,7 @@ class SchemaTest extends TestCase
      *
      * @depends testsaveSchemaPass
      *
-     * @return null
+     * @return void no return data
      */
     public function testProcessSchemaCreateTable4Duplicate()
     {
@@ -864,7 +870,7 @@ class SchemaTest extends TestCase
      *
      * @depends testsaveSchemaPass
      *
-     * @return null
+     * @return void no return data
      */
     public function testProcessSchemaDropTable3ColumnFlagPass()
     {
@@ -914,7 +920,7 @@ class SchemaTest extends TestCase
      *
      * @depends testsaveSchemaPass
      *
-     * @return null
+     * @return void no return data
      */
     public function testProcessSchemaDropTable3ColumnFlagDropTwiceFail()
     {
@@ -971,7 +977,7 @@ class SchemaTest extends TestCase
      *
      * @depends testsaveSchemaPass
      *
-     * @return null
+     * @return void no return data
      */
     public function testProcessSchemaCreateTable3ColumnPhpunit()
     {
@@ -1020,7 +1026,7 @@ class SchemaTest extends TestCase
      *
      * @depends testsaveSchemaPass
      *
-     * @return null
+     * @return void no return data
      */
     public function testProcessSchemaCreateTable3ColumnPhpunitFail()
     {
@@ -1078,7 +1084,7 @@ class SchemaTest extends TestCase
      *
      * @depends testsaveSchemaPass
      *
-     * @return null
+     * @return void no return data
      */
     public function testProcessSchemaIsNullableYes()
     {
@@ -1132,7 +1138,7 @@ class SchemaTest extends TestCase
      *
      * @depends testsaveSchemaPass
      *
-     * @return null
+     * @return void no return data
      */
     public function testProcessSchemaIsNullableNO()
     {
@@ -1187,7 +1193,7 @@ class SchemaTest extends TestCase
      *
      * @depends testsaveSchemaPass
      *
-     * @return null
+     * @return void no return data
      */
     public function testProcessSchemaColumnTYpe()
     {
@@ -1243,7 +1249,7 @@ class SchemaTest extends TestCase
      *
      * @depends testsaveSchemaPass
      *
-     * @return null
+     * @return void no return data
      */
     public function testProcessSchemaRemoveDefault()
     {
@@ -1300,7 +1306,7 @@ class SchemaTest extends TestCase
      *
      * @depends testsaveSchemaPass
      *
-     * @return null
+     * @return void no return data
      */
     public function testProcessSchemaSetDefault()
     {
@@ -1358,7 +1364,7 @@ class SchemaTest extends TestCase
      *
      * @depends testsaveSchemaPass
      *
-     * @return null
+     * @return void no return data
      */
     public function testProcessSchemaFKDeleteFail()
     {
@@ -1409,7 +1415,7 @@ class SchemaTest extends TestCase
      *
      * @depends testsaveSchemaPass
      *
-     * @return null
+     * @return void no return data
      */
     public function testProcessSchemaFKCreateFail()
     {
@@ -1439,14 +1445,14 @@ class SchemaTest extends TestCase
      * The Next set of tests check the automatic schema update function
      *****************************************************************************/
 
-    /*
+    /**
      * This function tests to check an error is returned if the schema filename is
      * invalid
      *
      * @group unittest
      * @group DstabaseAccess
      *
-     * @returns null
+     * @return void No return data
      */
     public function testautoSchemaManagementInvalidFileName()
     {
@@ -1459,14 +1465,14 @@ class SchemaTest extends TestCase
         );
     }
 
-    /*
+    /**
      * This function tests to check an error is returned if the schema table is
      * invalid
      *
      * @group unittest
      * @group DstabaseAccess
      *
-     * @returns null
+     * @return void No return data
      */
     public function testautoSchemaManagementInvalidTableName()
     {
@@ -1479,14 +1485,14 @@ class SchemaTest extends TestCase
         );
     }
 
-    /*
+    /**
      * This function tests to check an error is returned if the schema includes a
      * duplicate  table
      *
      * @group unittest
      * @group DstabaseAccess
      *
-     * @returns null
+     * @return void No return data
      */
     public function testautoSchemaManagementDuplicateTableName()
     {
@@ -1499,13 +1505,13 @@ class SchemaTest extends TestCase
         );
     }
 
-    /*
+    /**
      * This function tests that a new schema can be created
      *
      * @group unittest
      * @group DstabaseAccess
      *
-     * @returns null
+     * @return void No return data
      */
     public function testautoSchemaManagementNewSchema()
     {
@@ -1523,13 +1529,13 @@ class SchemaTest extends TestCase
     }
 
 
-    /*
+    /**
      * This function tests that No schema change can be dealt with
      *
      * @group unittest
      * @group DstabaseAccess
      *
-     * @returns null
+     * @return void No return data
      */
     public function testautoSchemaManagementNoChange()
     {
@@ -1547,14 +1553,14 @@ class SchemaTest extends TestCase
     }
 
 
-    /*
+    /**
      * This function tests to check an error is returned if the schema table is
      * invalid when a new schema is created.
      *
      * @group unittest
      * @group DstabaseAccess
      *
-     * @returns null
+     * @return void No return data
      */
     public function testautoSchemaManagementInvalidSchemaTable()
     {

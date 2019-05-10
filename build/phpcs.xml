@@ -3,11 +3,22 @@
     <arg name="colors" /> <!-- Use Colours -->
     <arg value="sp" />  <!-- Show progress.  Show shifs in report -->
 
-    <description>Webtemplate Coding Standard</description>
+    <description>PHP_Database_Client Coding Standard</description>
 
     <!-- Rule Sets -->
         <!--  Default Standard is PSR2 -->
         <rule ref="PSR2"/>
+
+        <rule ref="Squiz.Commenting.FunctionComment" />
+        <rule ref="Squiz.Commenting.FunctionCommentThrowTag" />
+        <rule ref="Squiz.Commenting.ClassComment">
+            <exclude name="Squiz.Commenting.ClassComment.TagNotAllowed" />
+        </rule>
+        <rule ref="Squiz.Commenting.FileComment">
+            <exclude name="Squiz.Commenting.FileComment.IncorrectAuthor" />
+            <exclude name="Squiz.Commenting.FileComment.IncorrectCopyright" />
+        </rule>
+        <!--<rule ref="Squiz.Commenting.VariableComment" /> -->
 
         <!-- Rules to exclude from Specific files
         <rule ref="Generic.Files.LineLength">
@@ -21,4 +32,5 @@
         <!-- Directorys to exclude as they only contain tempory files -->
         <exclude-pattern>*/testconfig.php</exclude-pattern>
         <exclude-pattern>*/vendor/*</exclude-pattern>
+        <exclude-pattern>*/bin/*</exclude-pattern>
 </ruleset>

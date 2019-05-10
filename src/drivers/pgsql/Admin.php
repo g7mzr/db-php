@@ -1,26 +1,26 @@
 <?php
 /**
- * This file is part of g7mzr/db
- *
- * (c) Sandy McNeil <g7mzrdev@gmail.com>
+ * This file is part of PHP_Database_Client.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ *
+ * @package db-php
+ * @subpackage Drivers
+ * @author   Sandy McNeil <g7mzrdev@gmail.com>
+ * @copyright (c) 2019, Sandy McNeil
+ * @license https://github.com/g7mzr/db-php/blob/master/LICENSE GNU General Public License v3.0
+ *
  */
+
 namespace g7mzr\db\drivers\pgsql;
 
 use g7mzr\db\interfaces\InterfaceDatabaseAdmin;
 
 /**
- * DB_DRIVER_PGSQL Class is the class for the pgsql database drivers.  It implements
- * the DBDRIVERIF interface to provide access to the PGSQL database via PDO
- *
- * @category DB
- * @package  Database
- * @author   Sandy McNeil <g7mzrdev@gmail.com>
- * @license  View the license file distributed with this source code
+ * Admin Class is the class for the pgsql database drivers.  It implements
+ * the Admin interface to provide access to the PGSQL database via PDO
  **/
-
 class Admin implements InterfaceDatabaseAdmin
 {
     /**
@@ -76,12 +76,14 @@ class Admin implements InterfaceDatabaseAdmin
      * Sets up the PGSQL Driver dsn from the calling function
      * and any PDO specific options.
      *
-     * @param array $dsn an array containing the database connection details.
-     * @param boolean $persistent Set true for persistent connection to database
+     * @param array   $dsn        An array containing the database connection details.
+     * @param boolean $persistent Set true for persistent connection to database.
+     *
+     * @throws \g7mzr\db\common\DBException If unable to connect to the database.
      *
      * @access public
      */
-    public function __construct($dsn, $persistent = false)
+    public function __construct(array $dsn, bool $persistent = false)
     {
         $conStr = sprintf(
             "pgsql:host=%s;port=%d;dbname=%s",
@@ -159,13 +161,13 @@ class Admin implements InterfaceDatabaseAdmin
      /**
      * Function to check if a Database User Exist
      *
-     * @param string $username The name of the database user
+     * @param string $username The name of the database user.
      *
      * @return boolean true if user exists, False if, or DB Error
      *
      * @access public
      */
-    public function userExists($username)
+    public function userExists(string $username)
     {
         $checkuserOk = false;
         $userExists = false;
@@ -193,15 +195,15 @@ class Admin implements InterfaceDatabaseAdmin
     /**
      * Function to create the database user for the application
      *
-     * @param string $username   The name of the database user
-     * @param string $password   The password for the database user
-     * @param string $unittestdb True if this is a test system
+     * @param string  $username   The name of the database user.
+     * @param string  $password   The password for the database user.
+     * @param boolean $unittestdb True if this is a test system.
      *
-     * @return boolean true if user Created or exists WEBTEMPLATE Error otherwise
+     * @return boolean true if user Created or exists DB Error otherwise
      *
      * @access public
      */
-    public function createUser($username, $password, $unittestdb = false)
+    public function createUser(string $username, string $password, bool $unittestdb = false)
     {
         $checkuserOk = false;
         $this->sql = " Create User $username with";
@@ -228,14 +230,13 @@ class Admin implements InterfaceDatabaseAdmin
     /**
      * Function to drop the database user for the application
      *
-     * @param string $username The name of the database user
+     * @param string $username The name of the database user.
      *
-     * @return boolean true if user does not exist or is dropped otherwise
-     *                 WEBTEMPLATE Error
+     * @return boolean true if user does not exist or is dropped otherwise DB Error
      *
      * @access public
      */
-    public function dropUser($username)
+    public function dropUser(string $username)
     {
         $checkuserOk = false;
         $this->sql = "Drop Role $username ";
@@ -257,13 +258,13 @@ class Admin implements InterfaceDatabaseAdmin
     /**
      * Function to drop the database for the application
      *
-     * @param string $database The name of the database
+     * @param string $database The name of the database.
      *
-     * @return boolean true if database exists WEBTEMPLATE Error otherwise
+     * @return boolean true if database exists DB Error otherwise
      *
      * @access public
      */
-    public function databaseExists($database)
+    public function databaseExists(string $database)
     {
         $msg = '';
         $databaseExists = false;
@@ -295,14 +296,14 @@ class Admin implements InterfaceDatabaseAdmin
      /**
      * Function to create the database for the application
      *
-     * @param string $database The name of the database
-     * @param string $username The name of the database user
+     * @param string $database The name of the database.
+     * @param string $username The name of the database user.
      *
-     * @return boolean true if database Created or exists WEBTEMPLATE Error otherwise
+     * @return boolean true if database Created or exists DB Error otherwise
      *
      * @access public
      */
-    public function createDatabase($database, $username)
+    public function createDatabase(string $database, string $username)
     {
 
         $dbcheckok = true;
@@ -332,13 +333,13 @@ class Admin implements InterfaceDatabaseAdmin
      /**
      * Function to drop the database for the application
      *
-     * @param string $database The name of the database
+     * @param string $database The name of the database.
      *
-     * @return boolean true if database Created or exists WEBTEMPLATE Error otherwise
+     * @return boolean true if database Created or exists DB Error otherwise
      *
      * @access public
      */
-    public function dropDatabase($database)
+    public function dropDatabase(string $database)
     {
 
         $msg = '';

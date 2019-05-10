@@ -1,26 +1,27 @@
 <?php
 /**
- * This file is part of Webtemplate.
- *
- * (c) Sandy McNeil <g7mzrdev@gmail.com>
+ * This file is part of PHP_Database_Client.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ *
+ * @package db-php
+ * @subpackage Drivers
+ * @author   Sandy McNeil <g7mzrdev@gmail.com>
+ * @copyright (c) 2019, Sandy McNeil
+ * @license https://github.com/g7mzr/db-php/blob/master/LICENSE GNU General Public License v3.0
+ *
  */
+
 namespace g7mzr\db\drivers\mock;
 
 use g7mzr\db\interfaces\InterfaceDatabaseDriver;
 
 /**
- * DB_DRIVER_MOCK Class is the mock class for unit testing.  It implements
- * the DBDRIVERIF interface but returns errors for every function
+ * The MOCK Class is used for unit testing.  It implements the InterfaceDatabaseDriver
+ * but the responses it provide depend on the data provided via the control function.
  *
- * @category Webtemplate
- * @package  Database
- * @author   Sandy McNeil <g7mzrdev@gmail.com>
- * @license  View the license file distributed with this source code
-**/
-
+ **/
 class DatabaseDriver implements InterfaceDatabaseDriver
 {
     /**
@@ -72,12 +73,12 @@ class DatabaseDriver implements InterfaceDatabaseDriver
 
     /**
      * Mock Database Driver Class Constructor
-     *     *
-     * @param array $dsn PDO Data Source Name
+     *
+     * @param array $dsn PDO Data Source Name.
      *
      * @access public
      */
-    public function __construct($dsn)
+    public function __construct(array $dsn)
     {
         $this->dsn  = $dsn ;
     } // end constructor
@@ -98,17 +99,17 @@ class DatabaseDriver implements InterfaceDatabaseDriver
     /**
      * Function to control the MOCK Database Interface.
      *
-     * This function is uesed to control wither the MOCK database interface return
-     * sucessful values or failures.
+     * This function is used to control wither the MOCK database interface return
+     * successful values or failures.
      *
-     * @param array $functions The name of the test being run
-     * @param array $data      The data being sent to or returned by the database
+     * @param array $functions The name of the test being run.
+     * @param array $data      The data being sent to or returned by the database.
      *
-     * @return boolean Return true if control function sucessful
+     * @return boolean Return true if control function successful
      *
      * @access public
      */
-    public function control($functions, $data)
+    public function control(array $functions, array $data)
     {
         $this->functions = $functions;
         $this->data      = $data;
@@ -177,16 +178,16 @@ class DatabaseDriver implements InterfaceDatabaseDriver
     /**
      * Function to end a database transaction
      *
-     * This function ends a Database Transaction by eithe committing or rolling
+     * This function ends a Database Transaction by either committing or rolling
      * back the transaction based on the value of $commit
      *
-     * @param boolean $commit Commmit transiaction if true, rollback otherwise.
+     * @param boolean $commit Commit transaction if true, rollback otherwise.
      *
      * @return boolean true if transaction is started
      *
      * @access public
      */
-    public function endTransaction($commit)
+    public function endTransaction(bool $commit)
     {
         $callers = debug_backtrace();
         $calling = $callers[1]['function'];
@@ -213,14 +214,14 @@ class DatabaseDriver implements InterfaceDatabaseDriver
      * $field name.  The data is stored in the array in the following format
      * "columnname" => "data to be inserted".
      *
-     * @param string $tableName  The name of the table data is to be inserted to
-     * @param array  $insertData The name of the fields and data to be inserted
+     * @param string $tableName  The name of the table data is to be inserted to.
+     * @param array  $insertData The name of the fields and data to be inserted.
      *
-     * @return boolean True if insert is ok or WEBTEMPLATE error type
+     * @return boolean True if insert is ok or DB error type
      *
      * @access public
      */
-    public function dbinsert($tableName, $insertData)
+    public function dbinsert(string $tableName, array $insertData)
     {
         $callers = debug_backtrace();
         $calling = $callers[1]['function'];
@@ -242,15 +243,15 @@ class DatabaseDriver implements InterfaceDatabaseDriver
     /**
      * This function returns the last insert id for the selected table
      *
-     * @param string $tableName The name of the table data was inserted to
-     * @param string $idfield   The name of the id field the table
-     * @param string $srchfield The name of the field where the search data is saved
-     * @param string $srchdata  The unique name entered in to the field
+     * @param string $tableName The name of the table data was inserted to.
+     * @param string $idfield   The name of the id field the table.
+     * @param string $srchfield The name of the field where the search data is saved.
+     * @param string $srchdata  The unique name entered in to the field.
      *
-     * @return integer The id of the last record inserted or WEBTEMPLATE error type
+     * @return integer The id of the last record inserted or DB error type
      * @access public
      */
-    public function dbinsertid($tableName, $idfield, $srchfield, $srchdata)
+    public function dbinsertid(string $tableName, string $idfield, string $srchfield, string $srchdata)
     {
         $callers = debug_backtrace();
         $calling = $callers[1]['function'];
@@ -287,15 +288,15 @@ class DatabaseDriver implements InterfaceDatabaseDriver
      * The data to be used for the where clause is again in an array in the same
      * format "columnname" => "search data".
      *
-     * @param string $tableName  The name of the table data is to be inserted to
-     * @param array  $insertData The name of the fields and data to be inserted
-     * @param array  $searchdata The field and data to be used in the "WHERE" clause
+     * @param string $tableName  The name of the table data is to be inserted to.
+     * @param array  $insertData The name of the fields and data to be inserted.
+     * @param array  $searchdata The field and data to be used in the "WHERE" clause.
      *
-     * @return boolean True if insert is ok or WEBTEMPLATE error type
+     * @return boolean True if insert is ok or DB error type
      *
      * @access public
      */
-    public function dbupdate($tableName, $insertData, $searchdata)
+    public function dbupdate(string $tableName, array $insertData, array $searchdata)
     {
         $callers = debug_backtrace();
         $calling = $callers[1]['function'];
@@ -318,19 +319,19 @@ class DatabaseDriver implements InterfaceDatabaseDriver
      * This function selects a single record from the database
      *
      * The columns to be returned from the search are in an array called  $fieldNames
-     * This is an unindexed array, array=("Col1", "col2" etc).
+     * This is an non-associated array, array=("Col1", "col2" etc).
      *
-     * The data to be usedfor the where clause is in an array called $searchdata in
+     * The data to be used for the where clause is in an array called $searchdata in
      * format"columnname" => "search data".
      *
-     * @param string $tableName  The name of the table data is to be selected from
-     * @param array  $fieldNames The name of the fields to select from the database
-     * @param array  $searchdata The field and data to be used in the "WHERE" clause
+     * @param string $tableName  The name of the table data is to be selected from.
+     * @param array  $fieldNames The name of the fields to select from the database.
+     * @param array  $searchdata The field and data to be used in the "WHERE" clause.
      *
-     * @return array Search data if search is ok or WEBTEMPLATE error type
+     * @return array Search data if search is ok or DB error type
      * @access public
      */
-    public function dbselectsingle($tableName, $fieldNames, $searchdata)
+    public function dbselectsingle(string $tableName, array $fieldNames, array $searchdata)
     {
         return $this->dbselect($tableName, $fieldNames, $searchdata);
     }
@@ -339,26 +340,26 @@ class DatabaseDriver implements InterfaceDatabaseDriver
      * This function returns a search from the database
      *
      * The columns to be returned from the search are in an array called  $fieldNames
-     * This is an unindexed array, array=("Col1", "col2" etc).
+     * This is an non-associated array, array=("Col1", "col2" etc).
      *
      * The data to be used for the where clause is in an array called $searchdata in
      * format "columnname" => "search data".
      *
-     * @param string $tableName  Name of the table data is to be selected from
-     * @param array  $fieldNames Name of the fields to select from the database
-     * @param array  $searchdata Field and data to be used in the "WHERE" clause
-     * @param string $order      Field used to order the selected data
-     * @param array  $join       Data used to join tables for the search
+     * @param string $tableName  Name of the table data is to be selected from.
+     * @param array  $fieldNames Name of the fields to select from the database.
+     * @param array  $searchdata Field and data to be used in the "WHERE" clause.
+     * @param string $order      Field used to order the selected data.
+     * @param array  $join       Data used to join tables for the search.
      *
-     * @return array Search data if search is ok or WEBTEMPLATE error type
+     * @return array Search data if search is ok or DB error type
      * @access public
      */
     public function dbselectmultiple(
-        $tableName,
-        $fieldNames,
-        $searchdata,
-        $order = null,
-        $join = null
+        string $tableName,
+        array $fieldNames,
+        array $searchdata,
+        string $order = null,
+        array $join = null
     ) {
         return $this->dbselect($tableName, $fieldNames, $searchdata);
     }
@@ -370,13 +371,13 @@ class DatabaseDriver implements InterfaceDatabaseDriver
      * in format "columnname" => "search data".  It only deletes data which matches
      * exactly
      *
-     * @param string $tableName  The name of the table data is to be deleted from
-     * @param array  $searchdata The field and data to be used in the "WHERE" clause
+     * @param string $tableName  The name of the table data is to be deleted from.
+     * @param array  $searchdata The field and data to be used in the "WHERE" clause.
      *
-     * @return boolean true if search is ok or WEBTEMPLATE error type
+     * @return boolean true if search is ok or DB error type
      * @access public
      */
-    public function dbdelete($tableName, $searchdata)
+    public function dbdelete(string $tableName, array $searchdata)
     {
         $callers = debug_backtrace();
         $calling = $callers[1]['function'];
@@ -400,13 +401,13 @@ class DatabaseDriver implements InterfaceDatabaseDriver
      * The data to be used for the where clause is in an array called $searchdata
      * in format "columnname" => array("type" => "<,> or =", "data" => "search data")
      *
-     * @param string $tableName  The name of the table data is to be deleted from
-     * @param array  $searchdata The field and data to be used in the "WHERE" clause
+     * @param string $tableName  The name of the table data is to be deleted from.
+     * @param array  $searchdata The field and data to be used in the "WHERE" clause.
      *
-     * @return boolean true if search is ok or WEBTEMPLATE error type
+     * @return boolean true if search is ok or DB error type
      * @access public
      */
-    public function dbdeletemultiple($tableName, $searchdata)
+    public function dbdeletemultiple(string $tableName, array $searchdata)
     {
         $msg = gettext('SQL Query Error');
         $err = \g7mzr\db\common\Common::raiseError($msg, DB_ERROR);
@@ -416,23 +417,23 @@ class DatabaseDriver implements InterfaceDatabaseDriver
     /**
      * This function implements the Select function in the mock driver.
      *
-     * This function is the comon select function in the mock driver for both
+     * This function is the common select function in the mock driver for both
      * dbselectsingle and dbselectmultiple
      *
      * The columns to be returned from the search are in an array called  $fieldNames
-     * This is an unindexed array, array=("Col1", "col2" etc).
+     * This is an non-associated array, array=("Col1", "col2" etc).
      *
-     * The data to be usedfor the where clause is in an array called $searchdata in
+     * The data to be used for the where clause is in an array called $searchdata in
      * format"columnname" => "search data".
      *
-     * @param string $tableName  The name of the table data is to be selected from
-     * @param array  $fieldNames The name of the fields to select from the database
-     * @param array  $searchdata The field and data to be used in the "WHERE" clause
+     * @param string $tableName  The name of the table data is to be selected from.
+     * @param array  $fieldNames The name of the fields to select from the database.
+     * @param array  $searchdata The field and data to be used in the "WHERE" clause.
      *
-     * @return array Search data if search is ok or WEBTEMPLATE error type
+     * @return array Search data if search is ok or DB error type
      * @access private
      */
-    private function dbselect($tableName, $fieldNames, $searchdata)
+    private function dbselect(string $tableName, array $fieldNames, array $searchdata)
     {
         $callers = debug_backtrace();
         $calling = $callers[2]['function'];
@@ -471,7 +472,7 @@ class DatabaseDriver implements InterfaceDatabaseDriver
     }
 
     /**
-     * Get the rowcount of the last activity
+     * Get the number of rows affected by the last command
      *
      * @return integer
      * @access public

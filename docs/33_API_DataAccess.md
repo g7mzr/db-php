@@ -150,8 +150,8 @@ public function dbselectmultiple(
     $tableName,
     $fieldNames,
     $searchdata,
-    $order = null,
-    $join = null
+    $order = '',
+    $join = array()
 );
 ```
 

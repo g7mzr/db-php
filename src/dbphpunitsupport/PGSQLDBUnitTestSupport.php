@@ -1,27 +1,26 @@
 <?php
 /**
- * This file is part of Webtemplate.
- *
- * (c) Sandy McNeil <g7mzrdev@gmail.com>
+ * This file is part of PHP_Database_Client.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ *
+ * @package db-php
+ * @subpackage UnitTest
+ * @author   Sandy McNeil <g7mzrdev@gmail.com>
+ * @copyright (c) 2019, Sandy McNeil
+ * @license https://github.com/g7mzr/db-php/blob/master/LICENSE GNU General Public License v3.0
+ *
  */
+
 namespace g7mzr\db\dbphpunitsupport;
 
 use g7mzr\db\dbphpunitsupport\InterfaceDBUnitTestSupport;
 
 /**
- * DB_DRIVER_PGSQL Class is the class for the pgsql database drivers.  It implements
- * the InterfaceDatabaseSchema interface to provide access to the PGSQL database via
- * the PHP DO
- *
- * @category DB
- * @package  Database
- * @author   Sandy McNeil <g7mzrdev@gmail.com>
- * @license  View the license file distributed with this source code
- **/
-
+ * PGSQLDBUnitTestSupport implements InterfaceDBUnitTestSupport and is used by phpunit
+ * to check if changes made to the database during testing were implemented.
+ */
 class PGSQLDBUnitTestSupport implements InterfaceDBUnitTestSupport
 {
     /**
@@ -46,11 +45,11 @@ class PGSQLDBUnitTestSupport implements InterfaceDBUnitTestSupport
      * Sets up the PGSQL Driver dsn from the calling function
      * and any PDO specific options.
      *
-     * @param \g7mzr\db\DBManager $dbmanager A dbmanager object
+     * @param \g7mzr\db\DBManager $dbmanager A dbmanager object.
      *
      * @access public
      */
-    public function __construct($dbmanager)
+    public function __construct(\g7mzr\db\DBManager $dbmanager)
     {
         $this->dbmanager = $dbmanager;
     } // end constructor
@@ -72,12 +71,12 @@ class PGSQLDBUnitTestSupport implements InterfaceDBUnitTestSupport
     /**
      * Function to send plain SQL Query to the Database
      *
-     * @param string $table The name of the table to be checked for existance
+     * @param string $table The name of the table to be checked for existence.
      *
      * @return boolean True if the table exists, false if table does not exist  or
      *                 DB Error if an error is encountered
      */
-    public function tableExists($table)
+    public function tableExists(string $table)
     {
         $tablefound  = false;
         $this->sql = "SELECT table_name FROM information_schema.tables ";
@@ -101,13 +100,13 @@ class PGSQLDBUnitTestSupport implements InterfaceDBUnitTestSupport
     /**
      * Function to check if a column exist in the database
      *
-     * @param string $table The name of the table the column is in
-     * @param string $column The name of the column to be checked for existance
+     * @param string $table  The name of the table the column is in.
+     * @param string $column The name of the column to be checked for existence.
      *
      * @return boolean True if the column exists, false if column does not exist  or
      *                 DB Error if an error is encountered
      */
-    public function columnExists($table, $column)
+    public function columnExists(string $table, string $column)
     {
         $columnfound  = false;
         $this->sql = "SELECT column_name FROM information_schema.columns ";
@@ -130,15 +129,15 @@ class PGSQLDBUnitTestSupport implements InterfaceDBUnitTestSupport
     }
 
     /**
-     * Function to check if a column is nullable
+     * Function to check if the value of a column can be set to null
      *
-     * @param string $table The name of the table the column is in
-     * @param string $column The name of the column to be checked
+     * @param string $table  The name of the table the column is in.
+     * @param string $column The name of the column to be checked.
      *
-     * @return boolean True if the column is nullable, false if not or
+     * @return boolean True if the column value can be set to null, false if not or
      *                 DB Error if an error is encountered
      */
-    public function columnIsNullable($table, $column)
+    public function columnIsNullable(string $table, string $column)
     {
         $isnullable  = false;
         $this->sql = "SELECT is_nullable FROM information_schema.columns ";
@@ -161,14 +160,14 @@ class PGSQLDBUnitTestSupport implements InterfaceDBUnitTestSupport
     /**
      * Function to check the column type
      *
-     * @param string $table The name of the table the column is in
-     * @param string $column The name of the column to be checked
-     * @param string $type   The type of column using RDMS type description
+     * @param string $table  The name of the table the column is in.
+     * @param string $column The name of the column to be checked.
+     * @param string $type   The type of column using RDMS type description.
      *
      * @return boolean True if the column type matches, false if not or
      *                 DB Error if an error is encountered
      */
-    public function columnType($table, $column, $type)
+    public function columnType(string $table, string $column, string $type)
     {
         $columntype = false;
         $this->sql = "SELECT data_type FROM information_schema.columns ";
@@ -191,14 +190,14 @@ class PGSQLDBUnitTestSupport implements InterfaceDBUnitTestSupport
     /**
      * Function to check the default value of the column
      *
-     * @param string $table  The name of the table the column is in
-     * @param string $column The name of the column to be checked
-     * @param string $value  The default value for the column
+     * @param string $table  The name of the table the column is in.
+     * @param string $column The name of the column to be checked.
+     * @param string $value  The default value for the column.
      *
      * @return boolean True if the column default value matches, false if not or
      *                 DB Error if an error is encountered
      */
-    public function columnDefault($table, $column, $value)
+    public function columnDefault(string $table, string $column, string $value)
     {
         $defaultmatch = false;
         $this->sql = "SELECT column_default FROM information_schema.columns ";

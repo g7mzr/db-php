@@ -33,13 +33,13 @@ public static function isError($data)
  * This function is used to create an object of type \g7mzr\db\common\Error which
  * is a error object for the DB access module.
  *
- * @param mixed  $message   a text message or error object
- * @param int    $code      The error code
- * @param string $dbmessage The error message from the PDO Driver.
+ * @param string  $message   a text message or error object
+ * @param integer $code      The error code
+ * @param array  $dbmessage The error message from the PDO Driver.
  *
  * @return object A DB Access Module Error object
  *
  * @access public
  */
-public static function raiseError($message = null, $code = null, $dbmessage = null)
+public static function raiseError($message, $code = 0, $dbmessage = array())
 ```

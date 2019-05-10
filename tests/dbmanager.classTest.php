@@ -1,12 +1,18 @@
 <?php
 /**
- * This file is part of DB
- *
- * (c) Sandy McNeil <g7mzrdev@gmail.com>
+ * This file is part of PHP_Database_Client.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ *
+ * @package db-php
+ * @subpackage UnitTest
+ * @author   Sandy McNeil <g7mzrdev@gmail.com>
+ * @copyright (c) 2019, Sandy McNeil
+ * @license https://github.com/g7mzr/db-php/blob/master/LICENSE GNU General Public License v3.0
+ *
  */
+
 namespace g7mzr\db\phpunit;
 
 // Include the Class Autoloader
@@ -18,13 +24,10 @@ require_once __DIR__ . '/../testconfig.php';
 use PHPUnit\Framework\TestCase;
 
 /**
- * Error Class Unit Tests
+ * DBManager Class Unit Tests
  *
- * @category g7mzr\db
- * @package  Tests
- * @author   Sandy McNeil <g7mzrdev@gmail.com>
- * @license  View the license file distributed with this source code
- **/
+ * This module contains the UNITTESTS for the DBManager module.
+ */
 class DBManagerTest extends TestCase
 {
     /**
@@ -38,7 +41,7 @@ class DBManagerTest extends TestCase
      * This function is called prior to any tests being run.
      * Its purpose is to set up any variables that are needed to tun the tests.
      *
-     * @return null No return data
+     * @return void No return data
      */
     protected function setUp()
     {
@@ -60,7 +63,7 @@ class DBManagerTest extends TestCase
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.
      *
-     * @return null No return data
+     * @return void No return data
      */
     protected function tearDown()
     {
@@ -73,7 +76,7 @@ class DBManagerTest extends TestCase
      * @group unittest
      * @group error
      *
-     * @return null
+     * @return void No return data
      */
     public function testErrorMessage()
     {
@@ -96,7 +99,7 @@ class DBManagerTest extends TestCase
      * @group unittest
      * @group SQLManager
      *
-     * @return null
+     * @return void No return data
      */
     public function testsetModeAdmin()
     {
@@ -115,7 +118,7 @@ class DBManagerTest extends TestCase
      * @group unittest
      * @group SQLManager
      *
-     * @return null
+     * @return void No return data
      */
     public function testsetModeSchema()
     {
@@ -134,7 +137,7 @@ class DBManagerTest extends TestCase
      * @group unittest
      * @group SQLManager
      *
-     * @return null
+     * @return void No return data
      */
     public function testsetModeDataDriver()
     {
@@ -155,7 +158,7 @@ class DBManagerTest extends TestCase
      * @group unittest
      * @group SQLManager
      *
-     * @return null
+      * @return void No return data
      */
     public function testsetModeInvalidFunction()
     {
@@ -176,7 +179,7 @@ class DBManagerTest extends TestCase
      * @group unittest
      * @group SQLManager
      *
-     * @return null
+     * @return void No return data
      */
     public function testsetModeInvalidDBDriverAdmin()
     {
@@ -214,7 +217,7 @@ class DBManagerTest extends TestCase
      * @group unittest
      * @group SQLManager
      *
-     * @return null
+     * @return void No return data
      */
     public function testsetModeInvalidDBDriverSchema()
     {
@@ -245,8 +248,6 @@ class DBManagerTest extends TestCase
         //$this->assertNull($db->getSchemaDriver());
     }
 
-
-
     /**
      * This function tests an error is returned if an invalid database driver is used
      * for the datadriver function
@@ -254,7 +255,7 @@ class DBManagerTest extends TestCase
      * @group unittest
      * @group SQLManager
      *
-     * @return null
+     * @return void No return data
      */
     public function testsetModeInvalidDBDriverDataDriver()
     {
@@ -293,7 +294,7 @@ class DBManagerTest extends TestCase
      * @group unittest
      * @group DatabaseAccess
      *
-     * @return null
+     * @return void No return data
      */
     public function testsetModeInvalidDSNAdmin()
     {
@@ -323,7 +324,7 @@ class DBManagerTest extends TestCase
      * @group unittest
      * @group DatabaseAccess
      *
-     * @return null
+     * @return void No return data
      */
     public function testsetModeInvalidDSNSchema()
     {
@@ -357,7 +358,7 @@ class DBManagerTest extends TestCase
      * @group unittest
      * @group DatabaseAccess
      *
-     * @return null
+     * @return void No return data
      */
     public function testsetModeInvalidDSNDataDriver()
     {
@@ -390,7 +391,7 @@ class DBManagerTest extends TestCase
      * @group unittest
      * @group DatabaseAccess
      *
-     * @return null
+     * @return void No return data
      */
     public function testInvalidAdminObject()
     {
@@ -427,7 +428,7 @@ class DBManagerTest extends TestCase
      * @group unittest
      * @group DatabaseAccess
      *
-     * @return null
+     * @return void No return data
      */
     public function testInvalidSchemaObject()
     {
@@ -463,7 +464,7 @@ class DBManagerTest extends TestCase
      * @group unittest
      * @group DatabaseAccess
      *
-     * @return null
+     * @return void No return data
      */
     public function testInvalidDataDriverObject()
     {

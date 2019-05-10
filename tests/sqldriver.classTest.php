@@ -1,12 +1,18 @@
 <?php
 /**
- * This file is part of DB
- *
- * (c) Sandy McNeil <g7mzrdev@gmail.com>
+ * This file is part of PHP_Database_Client.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ *
+ * @package db-php
+ * @subpackage UnitTest
+ * @author   Sandy McNeil <g7mzrdev@gmail.com>
+ * @copyright (c) 2019, Sandy McNeil
+ * @license https://github.com/g7mzr/db-php/blob/master/LICENSE GNU General Public License v3.0
+ *
  */
+
 namespace g7mzr\db\phpunit;
 
 // Include the Class Autoloader
@@ -18,13 +24,11 @@ require_once __DIR__ . '/../testconfig.php';
 use PHPUnit\Framework\TestCase;
 
 /**
- * Error Class Unit Tests
+ * SQLDriver Class Unit Tests
  *
- * @category g7mzr\db
- * @package  Tests
- * @author   Sandy McNeil <g7mzrdev@gmail.com>
- * @license  View the license file distributed with this source code
- **/
+ * This module contains the UNITTESTS for the SQL Driver Modules. The module chosen
+ * for the test will depend on the RDMS being used.
+ */
 class DriverTest extends TestCase
 {
     /**
@@ -59,7 +63,9 @@ class DriverTest extends TestCase
      * This function is called prior to any tests being run.
      * Its purpose is to set up any variables that are needed to tun the tests.
      *
-     * @return null No return data
+     * @throws \Exception If unable to connect to database.
+     *
+     * @return void No return data
      */
     protected function setUp()
     {
@@ -94,7 +100,9 @@ class DriverTest extends TestCase
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.
      *
-     * @return null No return data
+     * @throws \Exception If unable to connect to database.
+     *
+     * @return void No return data
      */
     protected function tearDown()
     {
@@ -140,7 +148,9 @@ class DriverTest extends TestCase
      * @group unittest
      * @group DatabaseAccess
      *
-     * @return null
+     * @throws \Exception If unable to connect to database.
+     *
+     * @return void No return data
      */
     public function testDestruct()
     {
@@ -165,7 +175,7 @@ class DriverTest extends TestCase
      * @group unittest
      * @group DatabaseAccess
      *
-     * @return null
+     * @return void No return data
      */
     public function testDBVersion()
     {
@@ -179,7 +189,7 @@ class DriverTest extends TestCase
      * @group unittest
      * @group DatabaseAccess
      *
-     * @return null
+     * @return void No return data
      */
     public function testSelectSingleRecord()
     {
@@ -223,7 +233,7 @@ class DriverTest extends TestCase
      * @group unittest
      * @group DatabaseAccess
      *
-     * @return null
+     * @return void No return data
      */
     public function testSelectSingleRecordNotFound()
     {
@@ -243,7 +253,7 @@ class DriverTest extends TestCase
      * @group unittest
      * @group DatabaseAccess
      *
-     * @return null
+     * @return void No return data
      */
     public function testSelectSingleInvalidQuery()
     {
@@ -270,7 +280,7 @@ class DriverTest extends TestCase
      * @group unittest
      * @group DatabaseAccess
      *
-     * @return null
+     * @return void No return data
      */
     public function testSelectSingleMultipleRecords()
     {
@@ -288,7 +298,7 @@ class DriverTest extends TestCase
      * @group unittest
      * @group DatabaseAccess
      *
-     * @return null
+     * @return void No return data
      */
     public function testSelectMultiple()
     {
@@ -308,7 +318,7 @@ class DriverTest extends TestCase
      * @group unittest
      * @group DatabaseAccess
      *
-     * @return null
+     * @return void No return data
      */
     public function testSelectMultipleOrderby()
     {
@@ -334,7 +344,7 @@ class DriverTest extends TestCase
      * @group unittest
      * @group DatabaseAccess
      *
-     * @return null
+     * @return void No return data
      */
     public function testSelectMultipleNotFound()
     {
@@ -358,7 +368,7 @@ class DriverTest extends TestCase
      * @group unittest
      * @group DatabaseAccess
      *
-     * @return null
+     * @return void No return data
      */
     public function testSelectMultipleInvalidQuery()
     {
@@ -395,7 +405,7 @@ class DriverTest extends TestCase
      * @group unittest
      * @group DatabaseAccess
      *
-     * @return null
+     * @return void No return data
      */
     public function testSelectMultipleLike()
     {
@@ -421,7 +431,7 @@ class DriverTest extends TestCase
      * @group unittest
      * @group DatabaseAccess
      *
-     * @return null
+     * @return void No return data
      */
     public function testSelectMultipleLikeAND()
     {
@@ -447,7 +457,7 @@ class DriverTest extends TestCase
      * @group unittest
      * @group DatabaseAccess
      *
-     * @return null
+     * @return void No return data
      */
     public function testSelectMultipleJOIN()
     {
@@ -463,8 +473,7 @@ class DriverTest extends TestCase
         $orderby = 'user_id';
         $join = array(
             'table2' => 'items',
-            'field1' =>
-            'users.user_id',
+            'field1' => 'users.user_id',
             'field2' => 'items.owner'
         );
         $result = $this->object->getDataDriver()->dbselectmultiple(
@@ -486,7 +495,7 @@ class DriverTest extends TestCase
      * @group DatabaseAccess
      * @depends testSelectSingleRecord
      *
-     * @return null
+     * @return void No return data
      */
     public function testInsert()
     {
@@ -512,7 +521,7 @@ class DriverTest extends TestCase
      * @group DatabaseAccess
      * @depends testSelectSingleRecord
      *
-     * @return null
+      * @return void No return data
      */
     public function testInsertItem()
     {
@@ -540,7 +549,7 @@ class DriverTest extends TestCase
      * @group DatabaseAccess
      * @depends testSelectSingleRecord
      *
-     * @return null
+     * @return void No return data
      */
     public function testInsertInvalidSql()
     {
@@ -567,7 +576,7 @@ class DriverTest extends TestCase
      * @group DatabaseAccess
      * @depends testSelectSingleRecord
      *
-     * @return null
+     * @return void No return data
      */
     public function testInsertID()
     {
@@ -584,7 +593,7 @@ class DriverTest extends TestCase
      * @group DatabaseAccess
      * @depends testSelectSingleRecord
      *
-     * @return null
+     * @return void No return data
      */
     public function testInsertIDNotFound()
     {
@@ -610,7 +619,7 @@ class DriverTest extends TestCase
      * @group DatabaseAccess
      * @depends testSelectSingleRecord
      *
-     * @return null
+     * @return void No return data
      */
     public function testInsertIDSQLError()
     {
@@ -635,7 +644,7 @@ class DriverTest extends TestCase
      * @depends testSelectSingleRecord
      * @depends testInsert
      *
-     * @return null
+     * @return void No return data
      */
     public function testUpdate()
     {
@@ -679,7 +688,7 @@ class DriverTest extends TestCase
      * @depends testSelectSingleRecord
      * @depends testInsert
      *
-     * @return null
+     * @return void No return data
      */
     public function testUpdatewithAND()
     {
@@ -722,7 +731,7 @@ class DriverTest extends TestCase
      * @depends testSelectSingleRecord
      * @depends testInsert
      *
-     * @return null
+     * @return void No return data
      */
     public function testUpdateRecordNotFound()
     {
@@ -747,7 +756,7 @@ class DriverTest extends TestCase
      * @depends testSelectSingleRecord
      * @depends testInsert
      *
-     * @return null
+     * @return void No return data
      */
     public function testUpdateSQLError()
     {
@@ -773,7 +782,7 @@ class DriverTest extends TestCase
      * @depends testSelectSingleRecord
      * @depends testInsert
      *
-     * @return null
+     * @return void No return data
      */
     public function testTransactionCommit()
     {
@@ -816,7 +825,7 @@ class DriverTest extends TestCase
      * @depends testSelectSingleRecord
      * @depends testInsert
      *
-     * @return null
+     * @return void No return data
      */
     public function testTransactionRollback()
     {
@@ -862,7 +871,7 @@ class DriverTest extends TestCase
      * @depends testSelectSingleRecord
      * @depends testInsert
      *
-     * @return null
+     * @return void No return data
      */
     public function testDeleteRecord()
     {
@@ -911,7 +920,7 @@ class DriverTest extends TestCase
      * @depends testSelectSingleRecord
      * @depends testInsert
      *
-     * @return null
+     * @return void No return data
      */
     public function testDeleteRecordMultipleSearchFields()
     {
@@ -958,7 +967,7 @@ class DriverTest extends TestCase
      * @depends testSelectSingleRecord
      * @depends testInsert
      *
-     * @return null
+     * @return void No return data
      */
     public function testDeleteRecordInvalidSQL()
     {
@@ -982,7 +991,7 @@ class DriverTest extends TestCase
      * @depends testSelectSingleRecord
      * @depends testInsert
      *
-     * @return null
+     * @return void No return data
      */
     public function testDeleteMultipleRecord()
     {
@@ -1032,7 +1041,7 @@ class DriverTest extends TestCase
      * @depends testSelectSingleRecord
      * @depends testInsert
      *
-     * @return null
+     * @return void No return data
      */
     public function testDeleteMultipleRecordsMultipleSearchfields()
     {
@@ -1083,7 +1092,7 @@ class DriverTest extends TestCase
      * @depends testSelectSingleRecord
      * @depends testInsert
      *
-     * @return null
+     * @return void No return data
      */
     public function testDeleteMultipleRecordsInvalidSQL()
     {
@@ -1106,7 +1115,7 @@ class DriverTest extends TestCase
      * @group unittest
      * @group DatabaseAccess
      *
-     * @return null
+     * @return void No return data
      */
     public function testRowCount()
     {

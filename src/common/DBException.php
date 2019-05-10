@@ -1,22 +1,23 @@
 <?php
 /**
- * This file is part of Webtemplate.
- *
- * (c) Sandy McNeil <g7mzrdev@gmail.com>
+ * This file is part of PHP_Database_Client.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ *
+ * @package db-php
+ * @subpackage Common_Code
+ * @author   Sandy McNeil <g7mzrdev@gmail.com>
+ * @copyright (c) 2019, Sandy McNeil
+ * @license https://github.com/g7mzr/db-php/blob/master/LICENSE GNU General Public License v3.0
+ *
  */
+
 namespace g7mzr\db\common;
 
 /**
-* Webtemplate Exception Class
-*
-* @category Webtemplate
-* @package  Exception
-* @author   Sandy McNeil <g7mzrdev@gmail.com>
-* @license  View the license file distributed with this source code
-**/
+ * PHP_Database_Client Exception Class
+ */
 class DBException extends \Exception
 {
     /**
@@ -29,7 +30,7 @@ class DBException extends \Exception
     /**
      * Constructor for AppException.
      *
-     * AppException makes the message manditory unlike the PHP version
+     * AppException makes the message mandatory unlike the PHP version
      *
      * @param string    $message   The DB Exception message to throw.
      * @param integer   $code      The Exception code.
@@ -39,10 +40,10 @@ class DBException extends \Exception
      * @access public
      */
     public function __construct(
-        $message,
-        $code = 0,
-        $dbmessage = '',
-        Throwable $previous = null
+        string $message,
+        int $code = 0,
+        string $dbmessage = '',
+        exception $previous = null
     ) {
         // make sure everything is assigned properly
         parent::__construct($message, $code, $previous);

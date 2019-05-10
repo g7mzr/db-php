@@ -1,12 +1,18 @@
 <?php
 /**
- * This file is part of Webtemplate.
- *
- * (c) Sandy McNeil <g7mzrdev@gmail.com>
+ * This file is part of PHP_Database_Client.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ *
+ * @package db-php
+ * @subpackage Access Module
+ * @author   Sandy McNeil <g7mzrdev@gmail.com>
+ * @copyright (c) 2019, Sandy McNeil
+ * @license https://github.com/g7mzr/db-php/blob/master/LICENSE GNU General Public License v3.0
+ *
  */
+
 namespace g7mzr\db;
 
 /**
@@ -62,15 +68,9 @@ define('DB_ERROR_SAVE', -7);
 define('DB_NOT_IMPLEMENTED', -8);
 
 /**
- * dbManger Class is the class for accessing for managing RDMS users, databases and
- * schemas
- *
- * @category Webtemplate
- * @package  Database
- * @author   Sandy McNeil <g7mzrdev@gmail.com>
- * @license  View the license file distributed with this source code
+ * dbManger Class is the class for managing RDMS users, databases and schema.  It is
+ * also used to access the database for manipulating data stored in it.
  **/
-
 class DBManager
 {
     /**
@@ -134,15 +134,19 @@ class DBManager
      *
      * Sets up the Database Manager Class
      *
-     * @param array   $dsn          array containing the database connection details.
-     * @param string  $adminuser    String containing the db adminuser name
-     * @param string  $admipassword String containing the db adminuser password
-     * @param boolean $persistent   Set true for persistent connection to database
+     * @param array   $dsn         Array containing the database connection details.
+     * @param string  $adminuser   String containing the db adminuser name.
+     * @param string  $adminpasswd String containing the db adminuser password.
+     * @param boolean $persistent  Set true for persistent connection to database.
      *
      * @access public
      */
-    public function __construct($dsn, $adminuser, $adminpasswd, $persistent = false)
-    {
+    public function __construct(
+        array $dsn,
+        string $adminuser,
+        string $adminpasswd,
+        bool $persistent = false
+    ) {
         $this->dsn = $dsn;
         $this->adminuser = $adminuser;
         $this->adminpasswd = $adminpasswd;
@@ -178,7 +182,7 @@ class DBManager
      *
      * @return true If the selected function is enabled db error other wise
      */
-    public function setMode($function)
+    public function setMode(string $function)
     {
         // Set up flag for function selected;
         $functionselected = true;
@@ -282,6 +286,8 @@ class DBManager
      *
      * This function returns the admin Driver pointer
      *
+     * @throws \g7mzr\db\common\DBException If the Admin driver is not initialised.
+     *
      * @return \g7mzr\db\interfaces\InterfaceDatabaseAdmin  Admin Driver
      */
     public function getAdminDriver()
@@ -299,6 +305,8 @@ class DBManager
      * Database Manager getAdminDriver
      *
      * This function returns the schema Driver pointer
+     *
+     * @throws \g7mzr\db\common\DBException If the schema driver is not initialised.
      *
      * @return \g7mzr\db\interfaces\InterfaceDatabaseSchema Schema Driver
      */
@@ -318,6 +326,8 @@ class DBManager
      *
      * This function returns the schema Driver pointer
      *
+     * @throws \g7mzr\db\common\DBException If the Data driver is not initialised.
+     *
      * @return \g7mzr\db\interfaces\InterfaceDatabaseDriver
      */
     public function getDataDriver()
@@ -334,14 +344,14 @@ class DBManager
     /**
      * Return a textual error message for a MDB2 error code
      *
-     * @param int $value integer error code,
+     * @param integer $value Integer error code.
      *
      * @return string error message, or false if the error code was
      *                  not recognised
      *
      * @access public
      */
-    public function errorMessage($value)
+    public function errorMessage(int $value)
     {
         $errorMessages = array(
             DB_OK                => "no error",
