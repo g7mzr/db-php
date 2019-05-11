@@ -4,4 +4,4 @@
 composer.phar
 testconfig.php
 _site
-
+.phpunit.result.cache

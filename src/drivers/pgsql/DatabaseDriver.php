@@ -303,7 +303,7 @@ class DatabaseDriver implements InterfaceDatabaseDriver
         $current_element = 1;
         foreach ($insertData as $key => $elementData) {
             $this->sql .= $key;
-            $paramname = ":". $key;
+            $paramname = ":" . $key;
             $data[$paramname] = $elementData;
             if ($current_element < $arr_length) {
                 $this->sql .= ", ";
@@ -553,7 +553,7 @@ class DatabaseDriver implements InterfaceDatabaseDriver
         // Set rowCount to 0;
         $this->rowcount = 0;
 
-        $this->sql = "DELETE FROM ". $tableName . " WHERE ";
+        $this->sql = "DELETE FROM " . $tableName . " WHERE ";
         while ($data = current($searchdata)) {
             $this->sql .= key($searchdata) . " = '" . $data . "'";
             if (next($searchdata) !== false) {
@@ -590,7 +590,7 @@ class DatabaseDriver implements InterfaceDatabaseDriver
         // Set rowCount to 0;
         $this->rowcount = 0;
 
-        $this->sql = "DELETE FROM ". $tableName . " WHERE ";
+        $this->sql = "DELETE FROM " . $tableName . " WHERE ";
         while ($data = current($searchdata)) {
             $this->sql .= key($searchdata) . " ";
             $this->sql .= $data['type'] . " '" . $data['data'] . "'";
@@ -700,7 +700,7 @@ class DatabaseDriver implements InterfaceDatabaseDriver
         if ($searchdata != null) {
             $sql .= " WHERE ";
             while ($data = \current($searchdata)) {
-                if (($data[0] =='%') or ($data[strlen($data)-1] == '%')) {
+                if (($data[0] == '%') or ($data[strlen($data) - 1] == '%')) {
                     $sql .= \key($searchdata) . " like '" . $data . "'";
                 } else {
                     $sql .= \key($searchdata) . " = '" . $data . "'";
@@ -725,7 +725,7 @@ class DatabaseDriver implements InterfaceDatabaseDriver
     private function processSearchOrder(string $order)
     {
 
-        $sql= '';
+        $sql = '';
         if ($order != '') {
             $sql .= " ORDER BY " . $order . " ASC";
         }

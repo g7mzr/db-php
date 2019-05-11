@@ -7,7 +7,7 @@
 
     <!-- Rule Sets -->
         <!--  Default Standard is PSR2 -->
-        <rule ref="PSR2"/>
+        <rule ref="PSR12"/>
 
         <rule ref="Squiz.Commenting.FunctionComment" />
         <rule ref="Squiz.Commenting.FunctionCommentThrowTag" />

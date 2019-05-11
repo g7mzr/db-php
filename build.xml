@@ -82,11 +82,8 @@
     <!--             Targets used to CLEAN the BUILD ENVIRONMENT            -->
     <!-- ================================================================== -->
     <target name="clean-artifacts">
-        <delete dir="${basedir}/build/api"/>
         <delete dir="${basedir}/build/coverage"/>
         <delete dir="${basedir}/build/logs"/>
-        <delete dir="${basedir}/build/pdepend"/>
-        <delete dir="${basedir}/build/phpdox"/>
         <!--<delete dir="${basedir}/vendor"/> -->
     </target>
 
@@ -105,11 +102,9 @@
             unless="prepare.done"
             depends="composer-install, clean, db-update"
             description="Prepare for build">
-        <mkdir dir="${basedir}/build/api"/>
         <mkdir dir="${basedir}/build/coverage"/>
         <mkdir dir="${basedir}/build/logs"/>
-        <mkdir dir="${basedir}/build/pdepend"/>
-        <mkdir dir="${basedir}/build/phpdox"/>
+
         <property name="prepare.done" value="true"/>
     </target>
 
@@ -136,34 +131,6 @@
         </exec>
     </target>
 
-
-    <target name="phploc"
-            description="Measure project size using PHPLOC and print human readable output. Intended for usage on the command line.">
-        <exec executable="${toolsdir}phploc" passthru="true" logoutput="true">
-            <arg value="--count-tests" />
-            <arg path="${basedir}/base" />
-            <arg path="${basedir}/includes" />
-            <arg path="${basedir}/tests" />
-        </exec>
-    </target>
-
-    <target name="phpmd"
-            description="Perform project mess detection using PHPMD and print human readable output. Intended for usage on the command line before committing.">
-        <exec executable="${toolsdir}phpmd" passthru="true" logoutput="true">
-            <arg path="${basedir}/src, ${basedir}/tests" />
-            <arg value="text" />
-            <arg path="${basedir}/build/phpmd.xml" />
-        </exec>
-    </target>
-
-    <target name="phpcpd"
-            description="Find duplicate code using PHPCPD and print human readable output. Intended for usage on the command line before committing.">
-        <exec executable="${toolsdir}phpcpd" passthru="true" logoutput="true">
-            <arg path="${basedir}/src" />
-        </exec>
-    </target>
-
-
     <target name="lint" description="Perform syntax check of sourcecode files">
         <apply executable="php" failonerror="true">
             <arg value="-l" />
@@ -178,44 +145,8 @@
         </apply>
     </target>
 
-    <target name="pdepend"
-            depends="prepare"
-            description="Calculate software metrics using PHP_Depend and log result in XML format. Intended for usage within a continuous integration environment.">
-        <exec executable="${toolsdir}pdepend" passthru="true" logoutput="true">
-            <arg value="--jdepend-xml=${basedir}/build/logs/jdepend.xml" />
-            <arg value="--jdepend-chart=${basedir}/build/pdepend/dependencies.svg" />
-            <arg value="--overview-pyramid=${basedir}/build/pdepend/overview-pyramid.svg" />
-            <arg path="${basedir}/src" />
-        </exec>
-    </target>
+ <!-- ===                     CI TARGETS                            === -->
 
-   <!-- ===                     CI TARGETS                            === -->
-
-    <target name="phploc-ci"
-            depends="prepare"
-            description="Measure project size using PHPLOC and log result in CSV and XML format. Intended for usage within a continuous integration environment.">
-        <exec executable="${toolsdir}phploc">
-            <arg value="--count-tests" />
-            <arg value="--log-csv" />
-            <arg path="${basedir}/build/logs/phploc.csv" />
-            <arg value="--log-xml" />
-            <arg path="${basedir}/build/logs/phploc.xml" />
-            <arg path="${basedir}/src" />
-            <arg path="${basedir}/tests" />
-        </exec>
-    </target>
-
-    <target name="phpmd-ci"
-            depends="prepare"
-            description="Perform project mess detection using PHPMD and log result in XML format. Intended for usage within a continuous integration environment.">
-        <exec executable="${toolsdir}phpmd">
-            <arg path="${basedir}/src, ${basedir}/tests" />
-            <arg value="xml" />
-            <arg path="${basedir}/build/phpmd.xml" />
-            <arg value="--reportfile" />
-            <arg path="${basedir}/build/logs/pmd.xml" />
-        </exec>
-    </target>
 
     <target name="phpcs-ci"
             depends="prepare"
@@ -229,17 +160,6 @@
         <arg path="${basedir}" />
        </exec>
     </target>
-
-    <target name="phpcpd-ci"
-            depends="prepare"
-            description="Find duplicate code using PHPCPD and log result in XML format. Intended for usage within a continuous integration environment.">
-        <exec executable="${toolsdir}phpcpd">
-            <arg value="--log-pmd" />
-            <arg path="${basedir}/build/logs/pmd-cpd.xml" />
-            <arg path="${basedir}/src" />
-        </exec>
-    </target>
-
 
     <!-- ================================================================== -->
     <!--                        Unit Testing Targets                        -->
@@ -259,22 +179,6 @@
     </target>
 
     <!-- ================================================================== -->
-    <!--                       Documentation Targets                        -->
-    <!-- ================================================================== -->
-
-    <target name="phpdox"
-            depends="phploc-ci,phpcs-ci,phpmd-ci"
-            description="Generate project documentation using phpDox">
-        <exec executable="${toolsdir}phpdox" dir="${basedir}/build"  passthru="true" logoutput="true"/>
-    </target>
-
-    <target name="phpdox2"
-            description="Generate project documentation using phpDox">
-        <exec executable="${toolsdir}phpdox" dir="${basedir}/build"  passthru="true" logoutput="true"/>
-    </target>
-
-
-    <!-- ================================================================== -->
     <!--                          Build Targets                             -->
     <!-- ================================================================== -->
 
@@ -284,17 +188,13 @@
     <target name="prepare"
             depends=" clean, db-update, prepare-build"/>
 
-    <target name="code-analysis"
-            depends="lint, phploc-ci, pdepend, phpmd-ci, phpcs-ci, phpcpd-ci"/>
-
     <target name="unit-test"
             depends="prepare, unit"/>
 
-    <target name="documentation"
-            depends="code-analysis, unit-test, phpdox"/>
+    <target name="code-style" depends="phpcs-ci"/>
 
     <!-- Default Build Target -->
     <target name="build"
-            depends="composer-install, clean, prepare, code-analysis, unit-test, documentation"/>
+            depends="clean, prepare, lint, unit-test, code-style"/>
 
 </project>

@@ -43,7 +43,7 @@ class DBManagerTest extends TestCase
      *
      * @return void No return data
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         global $dsn;
         try {
@@ -65,7 +65,7 @@ class DBManagerTest extends TestCase
      *
      * @return void No return data
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->object = null;
     }
@@ -311,7 +311,7 @@ class DBManagerTest extends TestCase
         }
         $result = $dbobject->setMode('admin');
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
-        $this->assertContains(
+        $this->assertStringContainsString(
             "Admin: Unable to connect to database as administrator",
             $result->getMessage()
         );
@@ -345,7 +345,7 @@ class DBManagerTest extends TestCase
         }
         $result = $dbobject->setMode('schema');
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
-        $this->assertContains(
+        $this->assertStringContainsString(
             "Admin: Unable to connect to database as administrator",
             $result->getMessage()
         );
@@ -379,7 +379,7 @@ class DBManagerTest extends TestCase
         }
         $result = $dbobject->setMode('datadriver');
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
-        $this->assertContains(
+        $this->assertStringContainsString(
             "Admin: Unable to connect to database for data access",
             $result->getMessage()
         );
@@ -414,7 +414,7 @@ class DBManagerTest extends TestCase
             $result = $this->object->getAdminDriver()->getDBVersion();
             $this->fail("Exception not raised for invalid Admin Driver");
         } catch (\Throwable $ex) {
-            $this->assertContains(
+            $this->assertStringContainsString(
                 "Admin Driver not initalised",
                 $ex->getMessage()
             );
@@ -451,7 +451,7 @@ class DBManagerTest extends TestCase
             $result = $this->object->getSchemaDriver()->getDBVersion();
             $this->fail("Exception not raised for invalid Schema Driver");
         } catch (\Throwable $ex) {
-            $this->assertContains(
+            $this->assertStringContainsString(
                 "Schema Driver not initalised",
                 $ex->getMessage()
             );
@@ -487,7 +487,7 @@ class DBManagerTest extends TestCase
             $result = $this->object->getDataDriver()->getDBVersion();
             $this->fail("Exception not raised for invalid Data Driver");
         } catch (\Throwable $ex) {
-            $this->assertContains(
+            $this->assertStringContainsString(
                 "Data Driver not initalised",
                 $ex->getMessage()
             );

@@ -59,7 +59,7 @@ class SQLAdminTest extends TestCase
      *
      * @return void No return data
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         global $dsn;
         try {
@@ -99,7 +99,7 @@ class SQLAdminTest extends TestCase
      *
      * @return void No return data
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         global $dsn;
         $conStr = sprintf(
@@ -152,7 +152,7 @@ class SQLAdminTest extends TestCase
         }
         $result = $dbobject->setMode('admin');
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
-        $this->assertContains(
+        $this->assertStringContainsString(
             "Admin: Unable to connect to database as administrator",
             $result->getMessage()
         );
@@ -169,7 +169,7 @@ class SQLAdminTest extends TestCase
     public function testDBVersion()
     {
         $result = $this->object->getAdminDriver()->getDBVersion();
-        $this->assertContains($this->drivertype, $result);
+        $this->assertStringContainsString($this->drivertype, $result);
     }
 
 
@@ -225,7 +225,7 @@ class SQLAdminTest extends TestCase
             $dsn['adminpasswd']
         );
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
-        $this->assertContains(
+        $this->assertStringContainsString(
             "Error Creating Database User",
             $result->getMessage()
         );

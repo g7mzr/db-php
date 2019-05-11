@@ -363,7 +363,7 @@ class Schema implements InterfaceDatabaseSchema
             $this->sql .= "UNIQUE ";
         }
         if ($default != "") {
-            $this->sql .= "DEFAULT '" . $default ."' ";
+            $this->sql .= "DEFAULT '" . $default . "' ";
         }
 
         $affected = $this->pdo->exec($this->sql);
@@ -583,7 +583,7 @@ class Schema implements InterfaceDatabaseSchema
         // Always check that result is not an error
         if ($result === false) {
             $msg = gettext("Error Dropping Index ");
-            $msg .= $tableName .":" .$indexName . "\n";
+            $msg .= $tableName . ":" . $indexName . "\n";
             return \g7mzr\db\common\Common::raiseError($msg, DB_ERROR);
         }
         return true;
@@ -661,7 +661,7 @@ class Schema implements InterfaceDatabaseSchema
         $resultArray = array();
         // Set the SQL to get the Schema
         $this->sql = "SELECT name, version, schema from " . $table;
-        $this->sql .= " where name = '" . $name ."'";
+        $this->sql .= " where name = '" . $name . "'";
         $this->stmt = $this->pdo->prepare($this->sql);
         $resultId = $this->stmt->execute();
         if ($resultId !== false) {
@@ -755,7 +755,7 @@ class Schema implements InterfaceDatabaseSchema
     private function dbEcho(string $msg = "")
     {
         if (!isset($GLOBALS['unittest'])) {
-            echo $msg. "\n";
+            echo $msg . "\n";
         }
         return true;
     }

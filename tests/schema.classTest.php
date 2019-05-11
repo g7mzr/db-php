@@ -60,7 +60,7 @@ class SchemaTest extends TestCase
      *
      * @return void No return data
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         global $dsn;
         try {
@@ -80,14 +80,14 @@ class SchemaTest extends TestCase
             echo $ex->getMessage();
             exit(1);
         }
-        $classname = 'g7mzr\\db\\dbphpunitsupport\\'. strtoupper($dsn['dbtype']);
+        $classname = 'g7mzr\\db\\dbphpunitsupport\\' . strtoupper($dsn['dbtype']);
         $classname .= 'DBUnitTestSupport';
 
         if (class_exists($classname)) {
             $this->dbphpunitsupport = new $classname($this->dbmanager);
         } else {
             echo $classname . "\n\n";
-            echo "Unable to load DB Unitest Support for " . $dsn['dbtype'] ."\n\n";
+            echo "Unable to load DB Unitest Support for " . $dsn['dbtype'] . "\n\n";
             exit(1);
         }
     }
@@ -100,7 +100,7 @@ class SchemaTest extends TestCase
      *
      * @return void No return data
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         global $dsn;
         $conStr = sprintf(
@@ -209,7 +209,7 @@ class SchemaTest extends TestCase
         $filename = __DIR__ . "/missingfile.json";
         $loadresult = $this->schemamanager->loadNewSchema($filename);
         $this->assertTrue(is_a($loadresult, "\g7mzr\db\common\Error"));
-        $this->assertContains(
+        $this->assertStringContainsString(
             "Unable to load database schema file",
             $loadresult->getMessage()
         );
@@ -229,7 +229,7 @@ class SchemaTest extends TestCase
         $filename = __DIR__ . "/error.classTest.php";
         $loadresult = $this->schemamanager->loadNewSchema($filename);
         $this->assertTrue(is_a($loadresult, "\g7mzr\db\common\Error"));
-        $this->assertContains(
+        $this->assertStringContainsString(
             "Unable to convert database schema file",
             $loadresult->getMessage()
         );
@@ -306,7 +306,7 @@ class SchemaTest extends TestCase
         $schemaresult = $this->schemamanager->processNewSchema();
         $this->assertTrue(is_a($schemaresult, "\g7mzr\db\common\Error"));
         $msg = $schemaresult->getMessage();
-        $this->assertContains("No columns have been defined for table", $msg);
+        $this->assertStringContainsString("No columns have been defined for table", $msg);
     }
 
     /**
@@ -331,7 +331,7 @@ class SchemaTest extends TestCase
         $schemaresult = $this->schemamanager->processNewSchema();
         $this->assertTrue(is_a($schemaresult, "\g7mzr\db\common\Error"));
         $msg = $schemaresult->getMessage();
-        $this->assertContains("Error Creating the Table", $msg);
+        $this->assertStringContainsString("Error Creating the Table", $msg);
     }
 
     /**
@@ -356,7 +356,7 @@ class SchemaTest extends TestCase
         $schemaresult = $this->schemamanager->processNewSchema();
         $this->assertTrue(is_a($schemaresult, "\g7mzr\db\common\Error"));
         $msg = $schemaresult->getMessage();
-        $this->assertContains("Error adding column to table1", $msg);
+        $this->assertStringContainsString("Error adding column to table1", $msg);
     }
 
 
@@ -382,7 +382,7 @@ class SchemaTest extends TestCase
         $schemaresult = $this->schemamanager->processNewSchema();
         $this->assertTrue(is_a($schemaresult, "\g7mzr\db\common\Error"));
         $msg = $schemaresult->getMessage();
-        $this->assertContains("Error Creating Foreign Keys", $msg);
+        $this->assertStringContainsString("Error Creating Foreign Keys", $msg);
     }
 
     /**
@@ -407,7 +407,7 @@ class SchemaTest extends TestCase
         $schemaresult = $this->schemamanager->processNewSchema();
         $this->assertTrue(is_a($schemaresult, "\g7mzr\db\common\Error"));
         $msg = $schemaresult->getMessage();
-        $this->assertContains("Error Creating Index", $msg);
+        $this->assertStringContainsString("Error Creating Index", $msg);
     }
 
     /*****************************************************************************
@@ -454,7 +454,7 @@ class SchemaTest extends TestCase
         }
         $saveresult = $this->schemamanager->saveSchema("dummy");
         $this->assertTrue(is_a($saveresult, '\g7mzr\db\common\Error'));
-        $this->assertContains(
+        $this->assertStringContainsString(
             "Error Deleteting Previous Schema",
             $saveresult->getMessage()
         );
@@ -476,7 +476,7 @@ class SchemaTest extends TestCase
         // Get the schema from the database
         $getResult = $this->schemamanager->getSchema('emptyschema');
         $this->assertTrue(is_a($getResult, '\g7mzr\db\common\Error'));
-        $this->assertContains(
+        $this->assertStringContainsString(
             "Schema Not Found",
             $getResult->getMessage()
         );
@@ -498,7 +498,7 @@ class SchemaTest extends TestCase
         // Get the schema from the database
         $getResult = $this->schemamanager->getSchema('dummy');
         $this->assertTrue(is_a($getResult, '\g7mzr\db\common\Error'));
-        $this->assertContains(
+        $this->assertStringContainsString(
             "SQL Query Error",
             $getResult->getMessage()
         );
@@ -624,7 +624,7 @@ class SchemaTest extends TestCase
         // Process the update to Fail No Current Schema
         $testResult = $this->schemamanager->processSchemaUpdate();
         $this->assertTrue(is_a($testResult, '\g7mzr\db\common\Error'));
-        $this->assertContains(
+        $this->assertStringContainsString(
             "Current Schema not initalised",
             $testResult->getMessage()
         );
@@ -652,7 +652,7 @@ class SchemaTest extends TestCase
         // Process the update to Fail No New Schema
         $testResult = $this->schemamanager->processSchemaUpdate();
         $this->assertTrue(is_a($testResult, '\g7mzr\db\common\Error'));
-        $this->assertContains(
+        $this->assertStringContainsString(
             "New Schema not initalised",
             $testResult->getMessage()
         );
@@ -1400,7 +1400,7 @@ class SchemaTest extends TestCase
         // Process the update
         $testResult = $this->schemamanager->processSchemaUpdate();
         $this->assertTrue(is_a($testResult, '\g7mzr\db\common\Error'));
-        $this->assertContains(
+        $this->assertStringContainsString(
             "Error deleteting Foreign Key fk_table1_dummy on table1",
             $testResult->getMessage()
         );
@@ -1434,7 +1434,7 @@ class SchemaTest extends TestCase
         // Process the update
         $testResult = $this->schemamanager->processSchemaUpdate();
         $this->assertTrue(is_a($testResult, '\g7mzr\db\common\Error'));
-        $this->assertContains(
+        $this->assertStringContainsString(
             "Error Creating Foreign Keys",
             $testResult->getMessage()
         );
@@ -1459,7 +1459,7 @@ class SchemaTest extends TestCase
         $filename = __DIR__ . "/missingfile.json";
         $loadresult = $this->schemamanager->autoSchemaManagement($filename);
         $this->assertTrue(is_a($loadresult, "\g7mzr\db\common\Error"));
-        $this->assertContains(
+        $this->assertStringContainsString(
             "Unable to load database schema file",
             $loadresult->getMessage()
         );
@@ -1479,7 +1479,7 @@ class SchemaTest extends TestCase
         $filename = __DIR__ . "/testdata/schema.json";
         $loadresult = $this->schemamanager->autoSchemaManagement($filename, false, 'Dummy');
         $this->assertTrue(is_a($loadresult, "\g7mzr\db\common\Error"));
-        $this->assertContains(
+        $this->assertStringContainsString(
             "SQL Query Error",
             $loadresult->getMessage()
         );
@@ -1499,7 +1499,7 @@ class SchemaTest extends TestCase
         $filename = __DIR__ . "/testdata/duplicatetableschema.json";
         $loadresult = $this->schemamanager->autoSchemaManagement($filename);
         $this->assertTrue(is_a($loadresult, "\g7mzr\db\common\Error"));
-        $this->assertContains(
+        $this->assertStringContainsString(
             "Error Creating the Table",
             $loadresult->getMessage()
         );
@@ -1567,7 +1567,7 @@ class SchemaTest extends TestCase
         $filename = __DIR__ . "/testdata/schema.json";
         $loadresult = $this->schemamanager->autoSchemaManagement($filename, true, 'Dummy');
         $this->assertTrue(is_a($loadresult, "\g7mzr\db\common\Error"));
-        $this->assertContains(
+        $this->assertStringContainsString(
             "Error Deleteting Previous Schema",
             $loadresult->getMessage()
         );

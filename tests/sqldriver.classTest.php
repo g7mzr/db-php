@@ -67,7 +67,7 @@ class DriverTest extends TestCase
      *
      * @return void No return data
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         global $dsn;
         try {
@@ -104,7 +104,7 @@ class DriverTest extends TestCase
      *
      * @return void No return data
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         global $dsn;
         if (($this->userCreated === true) or ($this->itemCreated === true)) {
@@ -180,7 +180,7 @@ class DriverTest extends TestCase
     public function testDBVersion()
     {
         $result = $this->object->getDataDriver()->getDBVersion();
-        $this->assertContains($this->drivertype, $result);
+        $this->assertStringContainsString($this->drivertype, $result);
     }
 
     /**
@@ -271,7 +271,7 @@ class DriverTest extends TestCase
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
         $this->assertEquals('SQL Query Error', $result->getMessage());
         $dberror = $result->getDBMessage();
-        $this->assertContains('column "user_id" does not exist', $dberror[2]);
+        $this->assertStringContainsString('column "user_id" does not exist', $dberror[2]);
     }
 
     /**
@@ -799,7 +799,7 @@ class DriverTest extends TestCase
             $this->fail($result->getMessage());
         }
 
-        $transactionend =$this->object->getDataDriver()->endTransaction(true);
+        $transactionend = $this->object->getDataDriver()->endTransaction(true);
         $this->assertTrue($transactionend);
 
         $this->userCreated = true;
@@ -842,7 +842,7 @@ class DriverTest extends TestCase
             $this->fail($result->getMessage());
         }
 
-        $transactionend =$this->object->getDataDriver()->endTransaction(false);
+        $transactionend = $this->object->getDataDriver()->endTransaction(false);
         $this->assertTrue($transactionend);
 
         // Data fields to be returned

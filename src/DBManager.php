@@ -203,7 +203,7 @@ class DBManager
             $dsn["databasename"] = "template1";
             $dsn["username"] = $this->adminuser;
             $dsn["password"] = $this->adminpasswd;
-            $classname = '\g7mzr\\db\\drivers\\'. strtolower($dsn['dbtype']) . '\Admin';
+            $classname = '\g7mzr\\db\\drivers\\' . strtolower($dsn['dbtype']) . '\Admin';
             if (class_exists($classname)) {
                 try {
                     $this->admindriver = new $classname(
@@ -226,13 +226,13 @@ class DBManager
                 $this->admindriver = null;
             }
         } elseif ($function == "schema") {
-            $classname = 'g7mzr\\db\\drivers\\'. strtolower($this->dsn['dbtype']) . '\Schema';
+            $classname = 'g7mzr\\db\\drivers\\' . strtolower($this->dsn['dbtype']) . '\Schema';
             if (class_exists($classname)) {
                 try {
                     $this->schemadriver = new $classname(
                         $this->dsn,
                         $this->persistent
-                     );
+                    );
                 } catch (\Throwable $ex) {
                     $errorMsg = gettext(
                         "Admin: Unable to connect to database as administrator"
@@ -249,13 +249,13 @@ class DBManager
                 $this->admindriver = null;
             }
         } elseif ($function == "datadriver") {
-            $classname = 'g7mzr\\db\\drivers\\'. strtolower($this->dsn['dbtype']) . '\DatabaseDriver';
+            $classname = 'g7mzr\\db\\drivers\\' . strtolower($this->dsn['dbtype']) . '\DatabaseDriver';
             if (class_exists($classname)) {
                 try {
                     $this->datadriver = new $classname(
                         $this->dsn,
                         $this->persistent
-                     );
+                    );
                 } catch (\Throwable $ex) {
                     $errorMsg = gettext(
                         "Admin: Unable to connect to database for data access"

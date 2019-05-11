@@ -46,7 +46,7 @@ class MockDriverTest extends TestCase
      *
      * @return void No return data
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         global $dsn;
         $localdsn = $dsn;
@@ -71,7 +71,7 @@ class MockDriverTest extends TestCase
      *
      * @return void No return data
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->object->getDataDriver()->disconnect();
     }
@@ -123,7 +123,7 @@ class MockDriverTest extends TestCase
         $data = array('version' => 'Mock 1.0.0');
         $this->object->getDataDriver()->control($functions, $data);
         $result = $this->object->getDataDriver()->getDBVersion();
-        $this->assertContains('Mock 1.0.0', $result);
+        $this->assertStringContainsString('Mock 1.0.0', $result);
     }
 
     /**
@@ -138,7 +138,7 @@ class MockDriverTest extends TestCase
     {
         // Test with no Control Data
         $result = $this->object->getDataDriver()->getDBVersion();
-        $this->assertContains('Error Getting Database Version', $result);
+        $this->assertStringContainsString('Error Getting Database Version', $result);
 
         //test with pass element missing from control data
         $functions = array(
@@ -149,7 +149,7 @@ class MockDriverTest extends TestCase
         $data = array('version' => 'Mock 1.0.0');
         $this->object->getDataDriver()->control($functions, $data);
         $result = $this->object->getDataDriver()->getDBVersion();
-        $this->assertContains('Error Getting Database Version', $result);
+        $this->assertStringContainsString('Error Getting Database Version', $result);
 
         //test with control data set to fail
         $functions = array(
@@ -159,7 +159,7 @@ class MockDriverTest extends TestCase
         );
         $this->object->getDataDriver()->control($functions, $data);
         $result = $this->object->getDataDriver()->getDBVersion();
-        $this->assertContains('Error Getting Database Version', $result);
+        $this->assertStringContainsString('Error Getting Database Version', $result);
     }
 
     /**
@@ -314,7 +314,7 @@ class MockDriverTest extends TestCase
         $insertdata = array("user" => "phpunit");
         $result = $this->object->getDataDriver()->dbInsert('users', $insertdata);
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
-        $this->assertContains("SQL Query Error", $result->getMessage());
+        $this->assertStringContainsString("SQL Query Error", $result->getMessage());
 
         // pass key missing from control data
         $functions = array(
@@ -327,7 +327,7 @@ class MockDriverTest extends TestCase
         $insertdata = array("user" => "phpunit");
         $result = $this->object->getDataDriver()->dbInsert('users', $insertdata);
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
-        $this->assertContains("SQL Query Error", $result->getMessage());
+        $this->assertStringContainsString("SQL Query Error", $result->getMessage());
 
         // pass key set to false
         $functions = array(
@@ -340,7 +340,7 @@ class MockDriverTest extends TestCase
         $insertdata = array("user" => "phpunit");
         $result = $this->object->getDataDriver()->dbInsert('users', $insertdata);
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
-        $this->assertContains("SQL Query Error", $result->getMessage());
+        $this->assertStringContainsString("SQL Query Error", $result->getMessage());
     }
 
     /**
@@ -404,7 +404,7 @@ class MockDriverTest extends TestCase
                 'srchdata'
             );
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
-        $this->assertContains("Error Getting record ID.", $result->getMessage());
+        $this->assertStringContainsString("Error Getting record ID.", $result->getMessage());
 
         // Test fail with missinf id key
         $functions = array(
@@ -421,7 +421,7 @@ class MockDriverTest extends TestCase
             'srchdata'
         );
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
-        $this->assertContains("Error Getting record ID.", $result->getMessage());
+        $this->assertStringContainsString("Error Getting record ID.", $result->getMessage());
 
         // Test with id key set to false
         $functions = array(
@@ -438,7 +438,7 @@ class MockDriverTest extends TestCase
             'srchdata'
         );
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
-        $this->assertContains("Error Getting record ID.", $result->getMessage());
+        $this->assertStringContainsString("Error Getting record ID.", $result->getMessage());
     }
 
     /**
@@ -481,7 +481,7 @@ class MockDriverTest extends TestCase
         // No control data
         $result = $this->object->getDataDriver()->dbUpdate('users', $updatedata, $searchdata);
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
-        $this->assertContains("SQL Query Error", $result->getMessage());
+        $this->assertStringContainsString("SQL Query Error", $result->getMessage());
 
         // Contol data key 'pass' missing
         $functions = array(
@@ -493,7 +493,7 @@ class MockDriverTest extends TestCase
         $this->object->getDataDriver()->control($functions, $data);
         $result = $this->object->getDataDriver()->dbUpdate('users', $updatedata, $searchdata);
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
-        $this->assertContains("SQL Query Error", $result->getMessage());
+        $this->assertStringContainsString("SQL Query Error", $result->getMessage());
 
         // Contol data key 'pass' set to false
         $functions = array(
@@ -505,7 +505,7 @@ class MockDriverTest extends TestCase
         $this->object->getDataDriver()->control($functions, $data);
         $result = $this->object->getDataDriver()->dbUpdate('users', $updatedata, $searchdata);
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
-        $this->assertContains("SQL Query Error", $result->getMessage());
+        $this->assertStringContainsString("SQL Query Error", $result->getMessage());
     }
 
     /**
@@ -566,7 +566,7 @@ class MockDriverTest extends TestCase
         $searchdata = array("user_id" => 1);
         $result = $this->object->getDataDriver()->dbSelectSingle('users', $fields, $searchdata);
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
-        $this->assertContains("Not Found", $result->getMessage());
+        $this->assertStringContainsString("Not Found", $result->getMessage());
     }
 
     /**
@@ -586,7 +586,7 @@ class MockDriverTest extends TestCase
         // No Control Data
         $result = $this->object->getDataDriver()->dbSelectSingle('users', $fields, $searchdata);
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
-        $this->assertContains("SQL Query Error", $result->getMessage());
+        $this->assertStringContainsString("SQL Query Error", $result->getMessage());
 
         // Missing pass key from functions array
         $functions = array(
@@ -604,7 +604,7 @@ class MockDriverTest extends TestCase
         $this->object->getDataDriver()->control($functions, $data);
         $result = $this->object->getDataDriver()->dbSelectSingle('users', $fields, $searchdata);
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
-        $this->assertContains("SQL Query Error", $result->getMessage());
+        $this->assertStringContainsString("SQL Query Error", $result->getMessage());
 
         //  pass key set to false in functions array
         $functions = array(
@@ -622,7 +622,7 @@ class MockDriverTest extends TestCase
         $this->object->getDataDriver()->control($functions, $data);
         $result = $this->object->getDataDriver()->dbSelectSingle('users', $fields, $searchdata);
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
-        $this->assertContains("SQL Query Error", $result->getMessage());
+        $this->assertStringContainsString("SQL Query Error", $result->getMessage());
     }
 
     /**
@@ -693,7 +693,7 @@ class MockDriverTest extends TestCase
         //  No Control Data
         $result = $this->object->getDataDriver()->dbDelete('users', $searchdata);
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
-        $this->assertContains("SQL Query Error", $result->getMessage());
+        $this->assertStringContainsString("SQL Query Error", $result->getMessage());
 
         //  'delete' key missing fron functions array
         $functions = array(
@@ -705,7 +705,7 @@ class MockDriverTest extends TestCase
         $this->object->getDataDriver()->control($functions, $data);
         $result = $this->object->getDataDriver()->dbDelete('users', $searchdata);
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
-        $this->assertContains("SQL Query Error", $result->getMessage());
+        $this->assertStringContainsString("SQL Query Error", $result->getMessage());
 
         //  'delete' key set to wron table name
         $functions = array(
@@ -717,7 +717,7 @@ class MockDriverTest extends TestCase
         $this->object->getDataDriver()->control($functions, $data);
         $result = $this->object->getDataDriver()->dbDelete('users', $searchdata);
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
-        $this->assertContains("SQL Query Error", $result->getMessage());
+        $this->assertStringContainsString("SQL Query Error", $result->getMessage());
     }
 
     /**
@@ -736,7 +736,7 @@ class MockDriverTest extends TestCase
         //  No Control Data implemented
         $result = $this->object->getDataDriver()->dbDeleteMultiple('users', $searchdata);
         $this->assertTrue(is_a($result, '\g7mzr\db\common\Error'));
-        $this->assertContains("SQL Query Error", $result->getMessage());
+        $this->assertStringContainsString("SQL Query Error", $result->getMessage());
     }
 
     /**
