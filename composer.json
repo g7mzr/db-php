@@ -1,5 +1,5 @@
 {
-    "name": "g7mzr/db",
+    "name": "g7mzr/db-php",
     "description": "This is a composer module for accessing databases via php",
     "license": "GPL-3.0-only",
     "authors": [
