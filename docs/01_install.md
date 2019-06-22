@@ -10,7 +10,7 @@ follow the instructions below to ad **db-php** to your project.
 ## Requirements
 
 Please see below for the minimum requirements to use **db-php**:
-* php 5.3.9
+* php 7.2.0
 * php PDO
 * php pdo_pgsql
 
