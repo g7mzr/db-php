@@ -10,7 +10,7 @@ follow the instructions below to ad **db-php** to your project.
 ## Requirements
 
 Please see below for the minimum requirements to use **db-php**:
-* php 7.2.0
+* php 5.3.9
 * php PDO
 * php pdo_pgsql
 
@@ -28,7 +28,7 @@ file.
     "repositories": [
         {
             "type": "vcs",
-            "url":  "git@github.com:g7mzr/db-php.git"
+            "url":  "https://github.com/g7mzr/db-php.git"
         }
     ]
 }
@@ -46,7 +46,7 @@ composer.json file.
     "repositories": [
         {
             "type": "vcs",
-            "url":  "git@github.com:g7mzr/db-php.git"
+            "url":  "https://github.com/g7mzr/db-php.git"
         }
     ]
 }
