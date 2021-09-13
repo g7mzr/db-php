@@ -14,9 +14,7 @@
  */
 
 namespace g7mzr\db\drivers\pgsql;
-
 use g7mzr\db\interfaces\InterfaceDatabaseDriver;
-
 /**
  * DatabaseDriverpgsql is the class for the pgsql database drivers.  It implements
  * the InterfaceDatabaseDriver interface to provide access to the PGSQL database
@@ -112,7 +110,7 @@ class DatabaseDriver implements InterfaceDatabaseDriver
 
         //$this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_SILENT);
-    } // end constructor
+    }
 
     /**
      * DB Driver Destructor

@@ -14,9 +14,7 @@
  */
 
 namespace g7mzr\db\drivers\pgsql;
-
 use g7mzr\db\interfaces\InterfaceDatabaseSchema;
-
 /**
  * Schema Class is the class for the pgsql database drivers.  It implements
  * the InterfaceDatabaseSchema interface to provide access to the PGSQL database via
@@ -112,7 +110,7 @@ class Schema implements InterfaceDatabaseSchema
 
         //$this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_SILENT);
-    } // end constructor
+    }
 
 
     /**

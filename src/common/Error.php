@@ -59,7 +59,7 @@ class Error
         $this->errorMsg = $errorMsg;
         $this->errorCode = $errorCode;
         $this->dbmessage = $dbmessage;
-    } // end constructor
+    }
 
 
     /**

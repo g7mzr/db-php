@@ -14,7 +14,6 @@
  */
 
 namespace g7mzr\db;
-
 /**
  * This Class is used to process the Database Schema Stored in json Files.
  *

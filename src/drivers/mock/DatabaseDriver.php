@@ -81,7 +81,7 @@ class DatabaseDriver implements InterfaceDatabaseDriver
     public function __construct(array $dsn)
     {
         $this->dsn  = $dsn ;
-    } // end constructor
+    }
 
     /**
      * DB Driver Destructor
@@ -194,11 +194,7 @@ class DatabaseDriver implements InterfaceDatabaseDriver
         $result = false;
 
         if (array_key_exists($calling, $this->functions)) {
-            if (array_key_exists(
-                'endtransaction',
-                $this->functions[$calling]
-            )
-            ) {
+            if (array_key_exists('endtransaction', $this->functions[$calling])) {
                 if ($this->functions[$calling]['endtransaction'] == true) {
                     $result = $commit;
                 }

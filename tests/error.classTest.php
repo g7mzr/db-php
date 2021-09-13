@@ -50,7 +50,7 @@ class ErrorTest extends TestCase
      *
      * @return void No return data
      */
-    protected function tearDown() : void
+    protected function tearDown(): void
     {
     }
 

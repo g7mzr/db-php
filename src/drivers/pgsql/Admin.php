@@ -110,7 +110,7 @@ class Admin implements InterfaceDatabaseAdmin
 
         //$this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_SILENT);
-    } // end constructor
+    }
 
 
     /**

@@ -52,7 +52,7 @@ class PGSQLDBUnitTestSupport implements InterfaceDBUnitTestSupport
     public function __construct(\g7mzr\db\DBManager $dbmanager)
     {
         $this->dbmanager = $dbmanager;
-    } // end constructor
+    }
 
 
     /**

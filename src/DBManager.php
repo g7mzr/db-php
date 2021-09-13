@@ -14,9 +14,7 @@
  */
 
 namespace g7mzr\db;
-
-use \g7mzr\db\common\Common;
-
+use g7mzr\db\common\Common;
 /**
  * The list below contains the error codes for the DB Module
  *
