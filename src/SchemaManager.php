@@ -201,12 +201,14 @@ class SchemaManager
                 $errorMsg = gettext("Unable to convert database schema file");
             }
         }
-        $this->newSchema = $dataarray["tables"];
-        $this->newSchemaversion = $dataarray["version"];
-        $this->newSchemaname = $dataarray['name'];
+        if ($fileloaded == true) {
+            $this->newSchema = $dataarray["tables"];
+            $this->newSchemaversion = $dataarray["version"];
+            $this->newSchemaname = $dataarray['name'];
 
-        // Save the current Schema Name.  Needed to get the schema from the database
-        $this->currentSchemaname = $dataarray['name'];
+            // Save the current Schema Name.  Needed to get the schema from the database
+            $this->currentSchemaname = $dataarray['name'];
+        }
 
         if ($fileloaded === true) {
             return true;

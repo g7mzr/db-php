@@ -699,7 +699,7 @@ class DatabaseDriver implements InterfaceDatabaseDriver
         $sql = '';
         if ($searchdata != null) {
             $sql .= " WHERE ";
-            while ($data = \current($searchdata)) {
+            while ($data = (string) \current($searchdata)) {
                 if (($data[0] == '%') or ($data[strlen($data) - 1] == '%')) {
                     $sql .= \key($searchdata) . " like '" . $data . "'";
                 } else {
